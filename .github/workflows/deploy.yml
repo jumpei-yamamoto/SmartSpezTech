@@ -3,7 +3,7 @@ name: Deploy FastAPI to Elastic Beanstalk
 on:
   push:
     branches:
-      - main  # mainブランチへのプッシュ時にトリガー
+      - main # mainブランチへのプッシュ時にトリガー
 
 jobs:
   deploy:
@@ -24,6 +24,7 @@ jobs:
           ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
           ECR_REPOSITORY: smartspeztech
           IMAGE_TAG: ${{ github.sha }}
+          AWS_REGION: ap-northeast-3 # ここで適切なリージョンを指定
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
