@@ -43,6 +43,6 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           pip install awsebcli
-          eb init -p docker smartspeztech-app --region ${{ secrets.AWS_REGION }}
-          eb use smartspeztech-env
+          eb init -p docker smartspeztech --region ${{ secrets.AWS_REGION }}
+          eb use smartspeztech
           eb deploy --staged
