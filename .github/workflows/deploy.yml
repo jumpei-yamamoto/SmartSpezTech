@@ -8,6 +8,8 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      AWS_REGION: ap-northeast-3
 
     steps:
       - name: Checkout code
@@ -18,11 +20,6 @@ jobs:
 
       - name: Log in to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
-        with:
-          mask-password: true
-          registry-type: private
-          skip-logout: false
-          aws-region: ap-northeast-3
 
       - name: Build and push Docker image to ECR
         env:
