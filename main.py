@@ -24,15 +24,15 @@ logging.basicConfig(level=logging.INFO)
 
 app = FastAPI() 
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
+# ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
-@app.middleware("http")
-async def validate_host(request, call_next):
-    host = request.headers.get("host")
-    if host not in ALLOWED_HOSTS:
-        raise HTTPException(status_code=400, detail="Invalid host")
-    response = await call_next(request)
-    return response
+# @app.middleware("http")
+# async def validate_host(request, call_next):
+#     host = request.headers.get("host")
+#     if host not in ALLOWED_HOSTS:
+#         raise HTTPException(status_code=400, detail="Invalid host")
+#     response = await call_next(request)
+#     return response
 
 # CORSミドルウェアを追加
 origins = [
