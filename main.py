@@ -26,7 +26,7 @@ app = FastAPI()
 
 # CORSミドルウェアを追加
 origins = [
-    "https://dov1dxiwhcjvd.cloudfront.net/.cloudfront.net",
+    "https://dov1dxiwhcjvd.cloudfront.net/",
     "https://smartspeztech.s3-website-ap-northeast-3.amazonaws.com",
     "http://smartspeztech.s3-website-ap-northeast-3.amazonaws.com"
 ]
