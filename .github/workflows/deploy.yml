@@ -10,39 +10,54 @@ jobs:
     runs-on: ubuntu-latest
     env:
       AWS_REGION: ap-northeast-3
+      ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+      ECR_REPOSITORY: smartspeztech
+      IMAGE_TAG: ${{ github.sha }}
 
     steps:
+      # コードのチェックアウト
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Docker Buildxのセットアップ
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      # AWS認証情報の設定
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-3
+          aws-region: ${{ secrets.AWS_REGION }}
 
+      # Amazon ECRにログイン
       - name: Log in to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
 
+      # DockerイメージのビルドとECRへのプッシュ
       - name: Build and push Docker image to ECR
-        env:
-          ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-          ECR_REPOSITORY: smartspeztech
-          IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
+      # Elastic Beanstalkへのデプロイ準備と実行
       - name: Deploy to Elastic Beanstalk
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
+          # Elastic Beanstalk CLIのインストール
           pip install awsebcli
+
+          # Elastic Beanstalk環境の初期化
           eb init -p docker smartspeztech --region ${{ secrets.AWS_REGION }}
+
+          # Elastic Beanstalk環境を指定
           eb use smartspeztech
+
+          # 環境変数をElastic Beanstalkに設定
+          eb setenv OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}"
+
+          # デプロイ実行
           eb deploy --staged
