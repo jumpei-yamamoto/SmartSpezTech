@@ -42,7 +42,9 @@ app = FastAPI()
 origins = [
     "https://dov1dxiwhcjvd.cloudfront.net",
     "https://smartspeztech.s3-website-ap-northeast-3.amazonaws.com",
-    "http://smartspeztech.s3-website-ap-northeast-3.amazonaws.com"
+    "http://smartspeztech.s3-website-ap-northeast-3.amazonaws.com",
+    "https://smartspeztech.eba-kam3e43r.ap-northeast-3.elasticbeanstalk.com"  # この行を追加
+
 ]
 
 if os.environ.get("ENVIRONMENT") == "development":
