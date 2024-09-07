@@ -13,9 +13,6 @@ import debugpy
 import asyncio
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-from textblob import TextBlob
-import re
-import debugpy
 
 # .envファイルを読み込む
 load_dotenv()
@@ -87,60 +84,28 @@ async def load_form(form_id: str):
 class AnalyzeRequest(BaseModel):
     answers: List[str]
 
-# @app.post("/analyze")
-# async def analyze_form(request: AnalyzeRequest):
-#     logger.info(f"Received analysis request with {len(request.answers)} answers")
-#     try:
-#         # Your analysis logic here
-#         # For example:
-#         analysis = "This is a placeholder analysis"
-#         logger.info("Analysis completed successfully")
-#         return {"analysis": analysis}
-#     except Exception as e:
-#         logger.error(f"An error occurred during analysis: {str(e)}")
-#         raise HTTPException(status_code=500, detail=str(e))
-
 @app.post("/analyze")
-async def analyze_form(form: Form, background_tasks: BackgroundTasks):
-    # タスクIDを生成
-    task_id = str(uuid.uuid4())
-    
-    # バックグラウンドタスクとして分析を実行
-    background_tasks.add_task(perform_analysis, task_id, form.answers)
-    
-    # 即座にタスクIDを返す
-    return {"task_id": task_id, "status": "processing"}
+async def analyze_form(form: Form):
+    try:
+        # 既存の分析ロジック
+        gpt_analysis = await analyze_with_gpt(form.answers)
+        sentiment_scores = [analyze_sentiment(answer) for answer in form.answers]
+        keywords = extract_keywords(form.answers)
 
-@app.get("/analysis_result/{task_id}")
-async def get_analysis_result(task_id: str):
-    # 結果を取得する処理（この例では単純化のため、グローバル変数を使用）
-    if task_id in analysis_results:
-        return {"status": "complete", "result": analysis_results[task_id]}
-    else:
-        return {"status": "processing"}
+        combined_analysis = f"""
+        GPTによる分析:
+        {gpt_analysis}
+        
+        感情分析スコア:
+        {', '.join([f'{score:.2f}' for score in sentiment_scores])}
+        
+        抽出されたキーワード:
+        {', '.join(keywords)}
+        """
 
-# グローバル変数で結果を保持（実際の実装では、データベースなどを使用すべき）
-analysis_results = {}
-
-async def perform_analysis(task_id: str, answers: List[str]):
-    # 既存の分析ロジック
-    gpt_analysis = await analyze_with_gpt(answers)
-    sentiment_scores = [analyze_sentiment(answer) for answer in answers]
-    keywords = extract_keywords(answers)
-
-    combined_analysis = f"""
-    GPTによる分析:
-    {gpt_analysis}
-    
-    感情分析スコア:
-    {', '.join([f'{score:.2f}' for score in sentiment_scores])}
-    
-    抽出されたキーワード:
-    {', '.join(keywords)}
-    """
-
-    # 結果を保存
-    analysis_results[task_id] = combined_analysis
+        return {"analysis": combined_analysis}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/")
 async def root():
