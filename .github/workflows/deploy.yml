@@ -57,7 +57,10 @@ jobs:
           eb use smartspeztech
 
           # 環境変数をElastic Beanstalkに設定
-          eb setenv OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}"
+          eb setenv OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" ALLOWED_HOSTS="dov1dxiwhcjvd.cloudfront.net"
 
           # デプロイ実行
           eb deploy --staged
+
+          # CloudFrontのキャッシュ無効化を追加
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
