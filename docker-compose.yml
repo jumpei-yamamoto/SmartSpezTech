@@ -4,7 +4,7 @@ services:
     expose:
       - "5678"
     ports:
-      - "80:80"
+      - "8000:8000"
       - "5678:5678"
     volumes:
       - .:/app
