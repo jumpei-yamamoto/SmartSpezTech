@@ -11,6 +11,7 @@ from textblob import TextBlob
 import re
 import debugpy
 import asyncio
+from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
@@ -40,8 +41,8 @@ origins = [
     "https://dov1dxiwhcjvd.cloudfront.net",
     "https://smartspeztech.s3-website-ap-northeast-3.amazonaws.com",
     "http://smartspeztech.s3-website-ap-northeast-3.amazonaws.com",
-    "https://smartspeztech.eba-kam3e43r.ap-northeast-3.elasticbeanstalk.com"  # この行を追加
-
+    "https://smartspeztech.eba-kam3e43r.ap-northeast-3.elasticbeanstalk.com",
+    
 ]
 
 if os.environ.get("ENVIRONMENT") == "development":
