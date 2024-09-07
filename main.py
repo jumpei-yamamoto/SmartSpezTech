@@ -1,12 +1,16 @@
 import os
 import logging
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, BackgroundTasks
 from pydantic import BaseModel
 from typing import List
 import uuid
 from fastapi.middleware.cors import CORSMiddleware
 from openai import OpenAI
+from textblob import TextBlob
+import re
+import debugpy
+import asyncio
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 from textblob import TextBlob
@@ -95,16 +99,33 @@ class AnalyzeRequest(BaseModel):
 #         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/analyze")
-async def analyze_form(form: Form):
+async def analyze_form(form: Form, background_tasks: BackgroundTasks):
+    # タスクIDを生成
+    task_id = str(uuid.uuid4())
+    
+    # バックグラウンドタスクとして分析を実行
+    background_tasks.add_task(perform_analysis, task_id, form.answers)
+    
+    # 即座にタスクIDを返す
+    return {"task_id": task_id, "status": "processing"}
 
-    # OpenAI GPT-3を使用した分析
-    gpt_analysis = await analyze_with_gpt(form.answers)
+@app.get("/analysis_result/{task_id}")
+async def get_analysis_result(task_id: str):
+    # 結果を取得する処理（この例では単純化のため、グローバル変数を使用）
+    if task_id in analysis_results:
+        return {"status": "complete", "result": analysis_results[task_id]}
+    else:
+        return {"status": "processing"}
 
-    # テキスト分析（感情分析とキーワード抽出）
-    sentiment_scores = [analyze_sentiment(answer) for answer in form.answers]
-    keywords = extract_keywords(form.answers)
+# グローバル変数で結果を保持（実際の実装では、データベースなどを使用すべき）
+analysis_results = {}
 
-    # 分析結果の組み合わせ
+async def perform_analysis(task_id: str, answers: List[str]):
+    # 既存の分析ロジック
+    gpt_analysis = await analyze_with_gpt(answers)
+    sentiment_scores = [analyze_sentiment(answer) for answer in answers]
+    keywords = extract_keywords(answers)
+
     combined_analysis = f"""
     GPTによる分析:
     {gpt_analysis}
@@ -116,7 +137,8 @@ async def analyze_form(form: Form):
     {', '.join(keywords)}
     """
 
-    return {"analysis": combined_analysis}
+    # 結果を保存
+    analysis_results[task_id] = combined_analysis
 
 @app.get("/")
 async def root():
