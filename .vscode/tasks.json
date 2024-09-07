@@ -17,7 +17,7 @@
       "label": "docker-run: debug",
       "dependsOn": ["docker-build"],
       "python": {
-        "args": ["main:app", "--host", "0.0.0.0", "--port", "8000"],
+        "args": ["main:app", "--host", "0.0.0.0", "--port", "80"],
         "module": "uvicorn"
       }
     }
