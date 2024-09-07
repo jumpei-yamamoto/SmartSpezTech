@@ -57,7 +57,7 @@ jobs:
           eb use smartspeztech
 
           # 環境変数をElastic Beanstalkに設定
-          eb setenv OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" ALLOWED_HOSTS="dov1dxiwhcjvd.cloudfront.net"
+          eb setenv OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" ALLOWED_HOSTS="dov1dxiwhcjvd.cloudfront.net,smartspeztech.eba-kam3e43r.ap-northeast-3.elasticbeanstalk.com"
 
           # デプロイ実行
           eb deploy --staged
