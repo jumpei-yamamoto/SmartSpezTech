@@ -39,13 +39,14 @@ jobs:
           mkdir -p backend/static
 
       # ビルド成果物をバックエンドの静的ファイルフォルダにコピー
-      - name: Copy React build to backend static folder
+      - name: Copy React build to static folder
         run: |
-          cp -r frontend/build/* backend/static/
+          mkdir -p static
+          cp -r frontend/build/* static/
           echo "Files in frontend/build:"
           ls -la frontend/build/
-          echo "Files in backend/static:"
-          ls -la backend/static
+          echo "Files in static:"
+          ls -la static
 
       # Docker Buildxのセットアップ
       - name: Set up Docker Buildx

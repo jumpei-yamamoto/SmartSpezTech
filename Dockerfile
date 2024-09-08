@@ -5,8 +5,8 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Reactのビルド資源をコピー
-COPY ./backend/static /app/static
+# Reactのビルド資源をコピー（パスを修正）
+COPY ./static /app/static
 
 # 他のPython関連のコードをコピー
 COPY . .
