@@ -5,6 +5,8 @@ on:
     workflows: ["Build React App and Upload Artifacts"] # フロントエンドのworkflow名
     types:
       - completed # フロントエンドのビルド完了時に実行
+  repository_dispatch:
+    types: [deploy_backend] # フロントエンドから送信されたイベントでトリガー
 
 jobs:
   build-and-deploy:
