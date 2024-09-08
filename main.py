@@ -27,7 +27,7 @@ logging.basicConfig(level=logging.INFO)
 
 app = FastAPI() 
 
-# CORSミドルウェアを追加
+# CORSミドルウェアの設定を一箇所に集中
 origins = [
     "http://smartspeztech.s3-website-ap-northeast-3.amazonaws.com",
     "https://dov1dxiwhcjvd.cloudfront.net",
@@ -40,18 +40,9 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization"],
 )
-
-# カスタムミドルウェアを追加してCORSヘッダーを設定
-@app.middleware("http")
-async def add_cors_headers(request, call_next):
-    response = await call_next(request)
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
-    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
-    return response
 
 # インメモリデータストア（本番環境では適切なデータベースを使用してください）
 forms = {}
@@ -99,31 +90,13 @@ async def analyze_form(form: Form):
         {', '.join(keywords)}
         """
 
-        return JSONResponse(
-            content={"analysis": combined_analysis},
-            headers={
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "POST, OPTIONS",
-                "Access-Control-Allow-Headers": "Content-Type, Authorization",
-            }
-        )
+        return {"analysis": combined_analysis}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
-
-@app.options("/{full_path:path}")
-async def options_handler(request: Request):
-    return JSONResponse(
-        content="OK",
-        headers={
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-            "Access-Control-Allow-Headers": "Content-Type, Authorization",
-        },
-    )
 
 async def analyze_with_gpt(answers: List[str]):
     prompt = f"以下のプロジェクト評価フォームの回答を分析し、プロジェクトの強みと弱み、改善点を指摘してください:\n\n"
