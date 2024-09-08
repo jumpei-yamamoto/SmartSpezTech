@@ -1,12 +1,13 @@
-name: Deploy FastAPI to Elastic Beanstalk
+name: Deploy FastAPI and React App to Elastic Beanstalk
 
 on:
-  push:
-    branches:
-      - main # mainブランチへのプッシュ時にトリガー
+  workflow_run:
+    workflows: ["Build React App and Upload Artifacts"] # フロントエンドのworkflow名
+    types:
+      - completed # フロントエンドのビルド完了時に実行
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     env:
       AWS_REGION: ap-northeast-3
@@ -15,9 +16,15 @@ jobs:
       IMAGE_TAG: ${{ github.sha }}
 
     steps:
-      # コードのチェックアウト
       - name: Checkout code
         uses: actions/checkout@v3
+
+      # React Build Artifactsのダウンロード
+      - name: Download React Build Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: react-build
+          path: frontend/build
 
       # Docker Buildxのセットアップ
       - name: Set up Docker Buildx
@@ -38,6 +45,10 @@ jobs:
       # DockerイメージのビルドとECRへのプッシュ
       - name: Build and push Docker image to ECR
         run: |
+          # Artifactsから取得したフロントエンドのビルド成果物をバックエンドの静的ファイルフォルダにコピー
+          cp -r frontend/build/* backend/static/
+
+          # Dockerイメージのビルドとプッシュ
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
