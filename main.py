@@ -26,7 +26,7 @@ logging.basicConfig(level=logging.INFO)
 
 app = FastAPI() 
 
-app.mount("/", StaticFiles(directory="static", html=True), name="static")
+app.mount("/", StaticFiles(directory="backend/static", html=True), name="static")
 
 # CORSミドルウェアの設定を一箇所に集中
 origins = [
