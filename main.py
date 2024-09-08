@@ -50,10 +50,16 @@ if os.environ.get("ENVIRONMENT") == "development":
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://dov1dxiwhcjvd.cloudfront.net",
+        "https://smartspeztech.s3-website-ap-northeast-3.amazonaws.com",
+        "http://smartspeztech.s3-website-ap-northeast-3.amazonaws.com",
+        "https://smartspeztech.eba-kam3e43r.ap-northeast-3.elasticbeanstalk.com",
+        "http://localhost:3000"  # 開発環境の場合
+    ],  # 許可するオリジンを手動で指定
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],  # 許可するHTTPメソッドを指定
+    allow_headers=["Content-Type", "Authorization", "X-Requested-With"],  # 許可するヘッダーを手動で指定
 )
 
 # OpenAI APIキーを.envファイルから読み込む
