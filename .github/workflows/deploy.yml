@@ -46,7 +46,15 @@ jobs:
           echo "Files in frontend/build:"
           ls -la frontend/build/
           echo "Files in static:"
-          ls -la static
+          ls -la static/
+
+      # ファイル構造の確認
+      - name: Check file structure
+        run: |
+          echo "Current directory structure:"
+          tree -L 3
+          echo "Content of static directory:"
+          ls -la static/
 
       # Docker Buildxのセットアップ
       - name: Set up Docker Buildx
@@ -59,7 +67,9 @@ jobs:
       # DockerイメージのビルドとECRへのプッシュ
       - name: Build and push Docker image to ECR
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          echo "Building Docker image..."
+          docker build --progress=plain -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          echo "Pushing Docker image..."
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       # Elastic Beanstalkへのデプロイ準備と実行
