@@ -1,6 +1,9 @@
 name: Deploy FastAPI and React App to Elastic Beanstalk
 
 on:
+  push:
+    branches:
+      - main # バックエンドのリポジトリの main ブランチに変更があった場合トリガー
   repository_dispatch:
     types: [deploy_backend] # フロントエンドから送信されたイベントでトリガー
 
