@@ -29,11 +29,7 @@ app = FastAPI()
 
 # CORSミドルウェアを追加
 origins = [
-    "https://dov1dxiwhcjvd.cloudfront.net",
-    "https://smartspeztech.s3-website-ap-northeast-3.amazonaws.com",
-    "http://smartspeztech.s3-website-ap-northeast-3.amazonaws.com",
-    "https://smartspeztech.eba-kam3e43r.ap-northeast-3.elasticbeanstalk.com",
-    "http://smartspeztech.s3-website.ap-northeast-3.amazonaws.com",  # この行を追加
+    "http://smartspeztech.s3-website-ap-northeast-3.amazonaws.com"
 ]
 
 if os.environ.get("ENVIRONMENT") == "development":
