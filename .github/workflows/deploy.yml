@@ -42,6 +42,10 @@ jobs:
       - name: Copy React build to backend static folder
         run: |
           cp -r frontend/build/* backend/static/
+          echo "Files in frontend/build:"
+          ls -la frontend/build/
+          echo "Files in backend/static:"
+          ls -la backend/static
 
       # Docker Buildxのセットアップ
       - name: Set up Docker Buildx
