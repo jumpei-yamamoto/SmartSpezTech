@@ -2,6 +2,7 @@ import os
 import logging
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, BackgroundTasks, Request
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import List
 import uuid
@@ -23,9 +24,9 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO)
 # logger = logging.getLogger(__name__)
 
-
-
 app = FastAPI() 
+
+app.mount("/", StaticFiles(directory="static", html=True), name="static")
 
 # CORSミドルウェアの設定を一箇所に集中
 origins = [
@@ -93,10 +94,6 @@ async def analyze_form(form: Form):
         return {"analysis": combined_analysis}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
 
 async def analyze_with_gpt(answers: List[str]):
     prompt = f"以下のプロジェクト評価フォームの回答を分析し、プロジェクトの強みと弱み、改善点を指摘してください:\n\n"
