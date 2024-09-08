@@ -30,6 +30,16 @@ jobs:
         run: |
           aws s3 sync s3://smartspeztech/react-build ./frontend/build
 
+      # バックエンドの静的ファイルフォルダを作成（存在しない場合）
+      - name: Create static directory
+        run: |
+          mkdir -p backend/static
+
+      # ビルド成果物をバックエンドの静的ファイルフォルダにコピー
+      - name: Copy React build to backend static folder
+        run: |
+          cp -r frontend/build/* backend/static/
+
       # Docker Buildxのセットアップ
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
