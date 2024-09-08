@@ -17,12 +17,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # React Build Artifactsのダウンロード
-      - name: Download React Build Artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: react-build
-          path: frontend/build
+      # S3からReactのビルド成果物をダウンロード
+      - name: Download React Build from S3
+        run: |
+          aws s3 sync s3://smartspeztech/react-build ./frontend/build
 
       # Docker Buildxのセットアップ
       - name: Set up Docker Buildx
@@ -43,7 +41,7 @@ jobs:
       # DockerイメージのビルドとECRへのプッシュ
       - name: Build and push Docker image to ECR
         run: |
-          # Artifactsから取得したフロントエンドのビルド成果物をバックエンドの静的ファイルフォルダにコピー
+          # S3から取得したフロントエンドのビルド成果物をバックエンドの静的ファイルフォルダにコピー
           cp -r frontend/build/* backend/static/
 
           # Dockerイメージのビルドとプッシュ
