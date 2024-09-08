@@ -57,7 +57,7 @@ jobs:
           eb use smartspeztech
 
           # 環境変数をElastic Beanstalkに設定
-          eb setenv OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}""
+          eb setenv OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}"
 
           # デプロイ実行
           eb deploy --staged
