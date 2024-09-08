@@ -12,6 +12,7 @@ import re
 import debugpy
 import asyncio
 from starlette.middleware.trustedhost import TrustedHostMiddleware
+from fastapi.responses import JSONResponse
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
@@ -42,7 +43,7 @@ origins = [
     "https://smartspeztech.s3-website-ap-northeast-3.amazonaws.com",
     "http://smartspeztech.s3-website-ap-northeast-3.amazonaws.com",
     "https://smartspeztech.eba-kam3e43r.ap-northeast-3.elasticbeanstalk.com",
-    
+    "http://smartspeztech.s3-website.ap-northeast-3.amazonaws.com",  # この行を追加
 ]
 
 if os.environ.get("ENVIRONMENT") == "development":
@@ -50,19 +51,20 @@ if os.environ.get("ENVIRONMENT") == "development":
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://dov1dxiwhcjvd.cloudfront.net",
-        "https://smartspeztech.s3-website-ap-northeast-3.amazonaws.com",
-        "http://smartspeztech.s3-website-ap-northeast-3.amazonaws.com",
-        "https://smartspeztech.eba-kam3e43r.ap-northeast-3.elasticbeanstalk.com",
-        "http://localhost:3000"  # 開発環境の場合
-    ],  # 許可するオリジンを手動で指定
+    allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],  # 許可するHTTPメソッドを指定
-    allow_headers=["Content-Type", "Authorization", "X-Requested-With"],  # 許可するヘッダーを手動で指定
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-# OpenAI APIキーを.envファイルから読み込む
+# カスタムミドルウェアを追加してCORSヘッダーを設定
+@app.middleware("http")
+async def add_cors_headers(request, call_next):
+    response = await call_next(request)
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+    return response
 
 # インメモリデータストア（本番環境では適切なデータベースを使用してください）
 forms = {}
@@ -110,7 +112,14 @@ async def analyze_form(form: Form):
         {', '.join(keywords)}
         """
 
-        return {"analysis": combined_analysis}
+        return JSONResponse(
+            content={"analysis": combined_analysis},
+            headers={
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "POST, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization",
+            }
+        )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
