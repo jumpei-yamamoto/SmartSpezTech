@@ -23,7 +23,8 @@ app = FastAPI()
 
 # CORSミドルウェアの設定
 origins = [
-    "https://dov1dxiwhcjvd.cloudfront.net",  # CloudFrontのドメイン
+    "https://dov1dxiwhcjvd.cloudfront.net",  # S3のドメイン
+    "https://d3uk2ucdyrom6m.cloudfront.net",  # Elastic Beanstalkのドメイン
     "http://localhost:3000",  # ローカル開発用
 ]
 
