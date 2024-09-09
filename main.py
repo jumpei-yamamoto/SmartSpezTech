@@ -28,6 +28,8 @@ origins = [
     "https://d3uk2ucdyrom6m.cloudfront.net",  # Elastic BeanstalkのCloudFrontドメイン
     "http://localhost:3000",  # ローカル開発用
     "http://smartspeztech.eba-kam3e43r.ap-northeast-3.elasticbeanstalk.com"  # Elastic Beanstalkのドメイン
+    "https://smartspeztech.com",  # 新しいカスタムドメイン
+    "https://www.smartspeztech.com"  # www付きのカスタムドメイン（必要な場合）
 ]
 
 
@@ -43,7 +45,7 @@ app.add_middleware(
 class ContentSecurityPolicyMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
         response = await call_next(request)
-        response.headers["Content-Security-Policy"] = "default-src 'self'; connect-src 'self' http: https:;"
+        response.headers["Content-Security-Policy"] = "default-src 'self'; connect-src 'self' https://smartspeztech.com https://*.cloudfront.net http: https:;"
         return response
 
 # ミドルウェアを追加
