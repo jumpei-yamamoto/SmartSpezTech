@@ -1,10 +1,3 @@
-# Build step for React (フロントエンドのビルド)
-FROM node:16 AS frontend-build
-WORKDIR /frontend
-
-COPY ./frontend ./
-
-
 # Python FastAPI backend step
 FROM python:3.9
 
@@ -14,8 +7,8 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Reactのビルドされたファイルを/staticにコピー
-COPY --from=frontend-build /frontend/build /static
+# Reactのビルド済みファイルを/staticにコピー
+COPY ./frontend/build /static
 
 # 他のPython関連のコードをコピー
 COPY . .
