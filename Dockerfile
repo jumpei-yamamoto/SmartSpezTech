@@ -8,7 +8,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Reactのビルド済みファイルを/staticにコピー
-COPY ./frontend/build /static
+COPY frontend/build /static
 
 # 他のPython関連のコードをコピー
 COPY . .
