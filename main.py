@@ -95,6 +95,10 @@ async def analyze_form(form: Form):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
+
 async def analyze_with_gpt(answers: List[str]):
     prompt = f"以下のプロジェクト評価フォームの回答を分析し、プロジェクトの強みと弱み、改善点を指摘してください:\n\n"
     for i, answer in enumerate(answers):
