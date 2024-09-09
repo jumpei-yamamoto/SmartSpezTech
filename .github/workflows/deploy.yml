@@ -84,8 +84,8 @@ jobs:
             pip install awsebcli
           fi
 
-          # Elastic Beanstalk環境の初期化
-          eb init -p docker smartspeztech --region ${{ secrets.AWS_REGION }}
+          # # Elastic Beanstalk環境の初期化
+          # eb init -p docker smartspeztech --region ${{ secrets.AWS_REGION }}
 
           # Elastic Beanstalk環境を指定
           eb use smartspeztech
