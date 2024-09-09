@@ -9,6 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from openai import OpenAI
 from textblob import TextBlob
 import re
+from starlette.middleware.base import BaseHTTPMiddleware
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
@@ -19,7 +20,7 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO)
 # logger = logging.getLogger(__name__)
 
-app = FastAPI() 
+app = FastAPI()
 
 # CORSミドルウェアの設定
 origins = [
@@ -35,6 +36,16 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Content-Security-Policy ヘッダーを追加するカスタムミドルウェア
+class ContentSecurityPolicyMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        response = await call_next(request)
+        response.headers["Content-Security-Policy"] = "default-src 'self'; connect-src 'self' http: https:;"
+        return response
+
+# ミドルウェアを追加
+app.add_middleware(ContentSecurityPolicyMiddleware)
 
 # インメモリデータストア（本番環境では適切なデータベースを使用してください）
 forms = {}
