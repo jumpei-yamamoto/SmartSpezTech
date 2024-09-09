@@ -1,12 +1,22 @@
+# Build step for React (フロントエンドのビルド)
+FROM node:16 AS frontend-build
+WORKDIR /frontend
+COPY ./frontend/package.json ./frontend/package-lock.json ./
+RUN npm install
+COPY ./frontend ./
+RUN npm run build
+
+# Python FastAPI backend step
 FROM python:3.9
 
 WORKDIR /app
 
+# Pythonの依存関係をインストール
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# GitHubActionsで作成した一時ディレクトリからReactのビルド資源をコピー
-COPY ./frontend/build /static
+# Reactのビルドされたファイルを/staticにコピー
+COPY --from=frontend-build /frontend/build /static
 
 # 他のPython関連のコードをコピー
 COPY . .
