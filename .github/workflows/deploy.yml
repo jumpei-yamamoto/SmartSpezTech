@@ -11,7 +11,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      AWS_REGION: ap-northeast-3 # 修正: 正しいリージョンに変更
+      AWS_REGION: ap-northeast-3 # 正しいリージョンを指定
       EB_APP_NAME: smartspeztech
       EB_ENV_NAME: smartspeztech
 
@@ -33,7 +33,6 @@ jobs:
       - name: Initialize Elastic Beanstalk
         run: |
           eb init -p python-3.9 ${{ env.EB_APP_NAME }} --region ${{ env.AWS_REGION }}
-          eb create ${{ env.EB_ENV_NAME }}
 
       - name: Deploy to Elastic Beanstalk
         run: |
