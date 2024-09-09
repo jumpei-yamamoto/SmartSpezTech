@@ -1,8 +1,7 @@
 import os
 import logging
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException, BackgroundTasks, Request
-from fastapi.staticfiles import StaticFiles
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List
 import uuid
@@ -10,10 +9,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from openai import OpenAI
 from textblob import TextBlob
 import re
-import debugpy
-import asyncio
-from starlette.middleware.trustedhost import TrustedHostMiddleware
-from fastapi.responses import JSONResponse
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
@@ -26,23 +21,18 @@ logging.basicConfig(level=logging.INFO)
 
 app = FastAPI() 
 
-app.mount("/", StaticFiles(directory="static", html=True), name="static")
-
-# CORSミドルウェアの設定を一箇所に集中
+# CORSミドルウェアの設定
 origins = [
-    "http://smartspeztech.s3-website-ap-northeast-3.amazonaws.com",
-    "https://dov1dxiwhcjvd.cloudfront.net",
+    "https://dov1dxiwhcjvd.cloudfront.net",  # CloudFrontのドメイン
+    "http://localhost:3000",  # ローカル開発用
 ]
-
-if os.environ.get("ENVIRONMENT") == "development":
-    origins.append("http://localhost:3000")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["Content-Type", "Authorization"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # インメモリデータストア（本番環境では適切なデータベースを使用してください）
@@ -69,13 +59,9 @@ async def load_form(form_id: str):
     else:
         raise HTTPException(status_code=404, detail="Form not found")
 
-class AnalyzeRequest(BaseModel):
-    answers: List[str]
-
 @app.post("/analyze")
 async def analyze_form(form: Form):
     try:
-        # 既存の分析ロジック
         gpt_analysis = await analyze_with_gpt(form.answers)
         sentiment_scores = [analyze_sentiment(answer) for answer in form.answers]
         keywords = extract_keywords(form.answers)
@@ -126,5 +112,5 @@ def extract_keywords(answers: List[str]):
 
 if __name__ == "__main__":
     import uvicorn
-    port = int(os.environ.get("PORT", 80))
+    port = int(os.environ.get("PORT", 8000))
     uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)

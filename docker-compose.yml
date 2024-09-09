@@ -6,9 +6,6 @@ services:
     ports:
       - "80:80"
       - "5678:5678"
-    volumes:
-      # - .:/app
-      - ./backend/static:/app/static
     environment:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
