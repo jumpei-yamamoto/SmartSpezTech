@@ -3,22 +3,24 @@ import logging
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from typing import List
+from typing import List, Dict, Any
 import uuid
 from fastapi.middleware.cors import CORSMiddleware
-from openai import OpenAI
+from openai import AsyncOpenAI
+
+aclient = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 from textblob import TextBlob
 import re
 from starlette.middleware.base import BaseHTTPMiddleware
+import asyncio
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# OpenAI APIキーの設定
 
 # .envファイルを読み込む
 load_dotenv()
 
-# Configure logging
+# ロギングの設定
 logging.basicConfig(level=logging.INFO)
-# logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
@@ -27,11 +29,10 @@ origins = [
     "https://dov1dxiwhcjvd.cloudfront.net",  # CloudFrontのドメイン
     "https://d3uk2ucdyrom6m.cloudfront.net",  # Elastic BeanstalkのCloudFrontドメイン
     "http://localhost:3000",  # ローカル開発用
-    "http://smartspeztech.eba-kam3e43r.ap-northeast-3.elasticbeanstalk.com"  # Elastic Beanstalkのドメイン
+    "http://smartspeztech.eba-kam3e43r.ap-northeast-3.elasticbeanstalk.com",  # Elastic Beanstalkのドメイン
     "https://smartspeztech.com",  # 新しいカスタムドメイン
     "https://www.smartspeztech.com"  # www付きのカスタムドメイン（必要な場合）
 ]
-
 
 app.add_middleware(
     CORSMiddleware,
@@ -85,10 +86,10 @@ async def analyze_form(form: Form):
         combined_analysis = f"""
         GPTによる分析:
         {gpt_analysis}
-        
+
         感情分析スコア:
         {', '.join([f'{score:.2f}' for score in sentiment_scores])}
-        
+
         抽出されたキーワード:
         {', '.join(keywords)}
         """
@@ -106,15 +107,13 @@ async def analyze_with_gpt(answers: List[str]):
     for i, answer in enumerate(answers):
         prompt += f"質問{i+1}: {answer}\n\n"
 
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",  # GPT-4o-miniモデルを使用
-        messages=[
-            {"role": "system", "content": "あなたはプロジェクト評価の専門家です。"},
-            {"role": "user", "content": prompt}
-        ]
-    )
+    response = await aclient.chat.completions.create(model="gpt-3.5-turbo",  # 最も安価なモデルを使用
+    messages=[
+        {"role": "system", "content": "あなたはプロジェクト評価の専門家です。"},
+        {"role": "user", "content": prompt}
+    ])
 
-    return response.choices[0].message.content
+    return response.choices[0].message.content.strip()
 
 def analyze_sentiment(text: str):
     blob = TextBlob(text)
@@ -129,6 +128,188 @@ def extract_keywords(answers: List[str]):
             word_freq[word] = word_freq.get(word, 0) + 1
     sorted_words = sorted(word_freq.items(), key=lambda x: x[1], reverse=True)
     return [word for word, _ in sorted_words[:10]]
+
+class EstimateRequest(BaseModel):
+    answers: Dict[str, Any]
+
+@app.post("/estimate")
+async def estimate(request: EstimateRequest):
+    try:
+        # 非同期で並行して処理を実行
+        tasks = [
+            create_system_requirements_specification(request.answers),
+            create_requirements_definition(request.answers),
+            create_screen_list(request.answers),
+            estimate_total_workload(request.answers)
+        ]
+        results = await asyncio.gather(*tasks)
+
+        return {
+            "requirements_specification": results[0],
+            "requirements_definition": results[1],
+            "screens": results[2],
+            "estimate_develop": results[3],
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# 以下の関数を非同期関数に変更
+async def create_system_requirements_specification(answers: Dict[str, Any]) -> str:
+    with open("template/System_Requirements_Specification.md", "r") as f:
+        template = f.read()
+    prompt = f"""
+    以下のプロジェクト要件に基づいて、システム要求仕様書の概要を作成してください。
+    詳細は省略し、主要なポイントのみを簡潔に記述してください。
+
+    プロジェクト要件:
+    {answers}
+
+    テンプレート:
+    {template}
+    """
+
+    response = await aclient.chat.completions.create(model="gpt-3.5-turbo",  # 最も安価なモデルを使用
+    messages=[
+        {"role": "system", "content": "あなたはシステム要求仕様書の専門家です。簡潔に要点をまとめてください。"},
+        {"role": "user", "content": prompt}
+    ])
+
+    return response.choices[0].message.content.strip()
+
+async def create_requirements_definition(answers: Dict[str, Any]) -> str:
+    with open("template/Requirements_Definition.md", "r") as f:
+        template = f.read()
+    prompt = f"""
+    以下のプロジェクト要件に基づいて、要件定義書の概要を作成してください。
+    詳細は省略し、主要なポイントのみを簡潔に記述してください。
+
+    プロジェクト要件:
+    {answers}
+
+    テンプレート:
+    {template}
+    """
+
+    response = await aclient.chat.completions.create(model="gpt-3.5-turbo",  # 最も安価なモデルを使用
+    messages=[
+        {"role": "system", "content": "あなたは要件定義の専門家です。簡潔に要点をまとめてください。"},
+        {"role": "user", "content": prompt}
+    ])
+
+    return response.choices[0].message.content.strip()
+
+async def create_screen_list(answers: Dict[str, Any]) -> List[str]:
+    prompt = f"""
+    以下のプロジェクト要件に基づいて、想定される主要な画面の一覧を作成してください。
+    各画面名を簡潔に記述し、最大10個までのリストとして返してください。
+
+    プロジェクト要件:
+    {answers}
+    """
+
+    response = await aclient.chat.completions.create(model="gpt-3.5-turbo",  # 最も安価なモデルを使用
+    messages=[
+        {"role": "system", "content": "あなたはUIデザインの専門家です。主要な画面のみをリストアップしてください。"},
+        {"role": "user", "content": prompt}
+    ])
+
+    screen_list = response.choices[0].message.content.strip().split("\n")
+    return [screen.strip("- ").strip() for screen in screen_list if screen]
+
+async def estimate_total_workload(answers: Dict[str, Any]) -> str:
+    prompt = f"""
+    以下のプロジェクト要件に基づいて、全体の工数見積もりの概要を作成してください。
+    各フェーズ（要件定義、設計、開発、テスト）の大まかな工数と合計を人日で表してください。
+
+    プロジェクト要件:
+    {answers}
+    """
+
+    response = await aclient.chat.completions.create(model="gpt-3.5-turbo",  # 最も安価なモデルを使用
+    messages=[
+        {"role": "system", "content": "あなたはプロジェクトマネージャーです。大まかな工数見積もりを提供してください。"},
+        {"role": "user", "content": prompt}
+    ])
+
+    return response.choices[0].message.content.strip()
+
+class ScreenDetailsRequest(BaseModel):
+    screen: str
+    answers: Dict[str, Any]
+
+@app.post("/screen_details")
+async def get_screen_details(request: ScreenDetailsRequest):
+    try:
+        workload = await estimate_screen_workload(request.screen, request.answers)
+        basic_design = await create_basic_design(request.screen, request.answers)
+        screen_sample = await create_screen_sample(request.screen, request.answers)
+
+        return {
+            "workload": workload,
+            "basic_design": basic_design,
+            "screen_sample": screen_sample
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+async def estimate_screen_workload(screen: str, answers: Dict[str, Any]) -> str:
+    prompt = f"""
+    以下の画面と全体のプロジェクト要件に基づいて、この画面の開発工数を見積もってください。
+    工数は人日で表してください。
+
+    画面名: {screen}
+    プロジェクト要件:
+    {answers}
+    """
+
+    response = await aclient.chat.completions.create(model="gpt-3.5-turbo",  # 最も安価なモデルを使用
+    messages=[
+        {"role": "system", "content": "あなたはプロジェクトマネージャーです。"},
+        {"role": "user", "content": prompt}
+    ])
+
+    return response.choices[0].message.content.strip()
+
+async def create_basic_design(screen: str, answers: Dict[str, Any]) -> str:
+    with open("template/Basic_Design_Specification.md", "r") as f:
+        template = f.read()
+    prompt = f"""
+    以下の画面と全体のプロジェクト要件に基づいて、この画面の基本設計を作成してください。
+    テンプレートに従って、各セクションを適切に埋めてください。
+
+    画面名: {screen}
+    プロジェクト要件:
+    {answers}
+
+    テンプレート:
+    {template}
+    """
+
+    response = await aclient.chat.completions.create(model="gpt-3.5-turbo",  # 最も安価なモデルを使用
+    messages=[
+        {"role": "system", "content": "あなたはシステム設計の専門家です。"},
+        {"role": "user", "content": prompt}
+    ])
+
+    return response.choices[0].message.content.strip()
+
+async def create_screen_sample(screen: str, answers: Dict[str, Any]) -> str:
+    prompt = f"""
+    以下の画面と全体のプロジェクト要件に基づいて、この画面のサンプルデザインをASCIIアートで作成してください。
+    主要な要素のレイアウトと簡単な説明を含めてください。
+
+    画面名: {screen}
+    プロジェクト要件:
+    {answers}
+    """
+
+    response = await aclient.chat.completions.create(model="gpt-3.5-turbo",  # 最も安価なモデルを使用
+    messages=[
+        {"role": "system", "content": "あなたはUIデザイナーです。"},
+        {"role": "user", "content": prompt}
+    ])
+
+    return response.choices[0].message.content.strip()
 
 if __name__ == "__main__":
     import uvicorn
