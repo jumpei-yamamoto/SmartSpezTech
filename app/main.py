@@ -1,10 +1,13 @@
 import os
 import logging
 from dotenv import load_dotenv
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import form, estimate, screen
+from app.routers import form, screen
+from app.routers import estimate as estimate_router
 from app.middleware.content_security_policy import ContentSecurityPolicyMiddleware
+from app.database import engine, get_db
+from app.models import estimate as estimate_model
 
 # .envファイルを読み込む
 load_dotenv()
@@ -13,6 +16,9 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO)
 
 app = FastAPI()
+
+# モデルに基づいてテーブルを作成
+estimate_model.Base.metadata.create_all(bind=engine)
 
 # CORSミドルウェアの設定
 origins = [
@@ -37,7 +43,7 @@ app.add_middleware(ContentSecurityPolicyMiddleware)
 
 # ルーターを追加
 app.include_router(form.router)
-app.include_router(estimate.router)
+app.include_router(estimate_router.router)
 app.include_router(screen.router)
 
 @app.get("/")
