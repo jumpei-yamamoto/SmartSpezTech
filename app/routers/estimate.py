@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from app.models.estimate import EstimateRequest
+from app.schemas.estimate import EstimateRequest
 from app.services.estimate import generate_estimate
 
 router = APIRouter()

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from app.models.form import Form
+from app.schemas.form import Form
 from app.services.form import save_form_data, load_form_data
 
 router = APIRouter()

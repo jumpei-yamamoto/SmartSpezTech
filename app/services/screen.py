@@ -74,7 +74,8 @@ async def estimate_screen_workload(screen, answers):
     return response.choices[0].message.content.strip()
 
 async def create_basic_design(screen, answers):
-    with open("template/Basic_Design_Specification.md", "r", encoding='utf-8') as f:
+    template_path = os.path.join(os.path.dirname(__file__), "..", "..", "template", "Basic_Design_Specification.md")
+    with open(template_path, "r", encoding='utf-8') as f:
         template = f.read()
     prompt = f"""
 以下の画面と全体のプロジェクト要件に基づいて、この画面の基本設計を作成してください。

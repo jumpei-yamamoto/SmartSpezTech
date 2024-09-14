@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from app.models.screen import ScreenDetailsRequest
+from app.schemas.screen import ScreenDetailsRequest
 from app.services.screen import get_screen_details
 
 router = APIRouter()

@@ -4,7 +4,8 @@ import os
 aclient = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 async def create_system_requirements_specification(answers):
-    with open("template/System_Requirements_Specification.md", "r", encoding='utf-8') as f:
+    template_path = os.path.join(os.path.dirname(__file__), "..", "..", "template", "System_Requirements_Specification.md")
+    with open(template_path, "r", encoding='utf-8') as f:
         template = f.read()
     prompt = f"""
 以下のプロジェクト要件に基づいて、システム要求仕様書の概要を作成してください。
@@ -28,7 +29,8 @@ async def create_system_requirements_specification(answers):
     return response.choices[0].message.content.strip()
 
 async def create_requirements_definition(answers):
-    with open("template/Requirements_Definition.md", "r", encoding='utf-8') as f:
+    template_path = os.path.join(os.path.dirname(__file__), "..", "..", "template", "Requirements_Definition.md")
+    with open(template_path, "r", encoding='utf-8') as f:
         template = f.read()
     prompt = f"""
 以下のプロジェクト要件に基づいて、要件定義書の概要を作成してください。
