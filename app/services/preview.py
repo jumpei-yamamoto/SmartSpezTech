@@ -72,6 +72,10 @@ async def generate_preview_screen(screen):
     必要に応じてJavaScriptも含めてください。
     コードは一つのコードブロックで提供してください。
     ボタンやリンク・リストボックスなどのインタラクティブな要素は実装してください。またidをつけてください。
+    全てのイベントとリンクは、JavaScriptのアラートで何が実行されるかを簡潔に表示するようにしてください。
+    例: 
+    - ボタン: onclick="alert('ログイン処理が実行されます')"
+    - リンク: onclick="event.preventDefault(); alert('ホームページへ遷移が実行されます')"
     説明や追加のコメントは含めず、実装のコードのみを返してください。
 
     画面情報: {screen}
@@ -80,7 +84,7 @@ async def generate_preview_screen(screen):
     response = await aclient.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
-            {"role": "system", "content": "あなたはフロントエンド開発の専門家かつUIデザイナーです。コードのみを提供し、説明は含めません。"},
+            {"role": "system", "content": "あなたはフロントエンド開発の専門家かつUIデザイナーです。コードのみを提供し、説明は含めません。全てのイベントとリンクはJavaScriptのアラートで表示し、'〇〇が実行されます'という形式で記述します。"},
             {"role": "user", "content": prompt}
         ]
     )
