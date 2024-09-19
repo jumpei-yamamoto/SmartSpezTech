@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from app.schemas.estimate import EstimateRequest, InquiryRequest, SimulationResult
-from app.services.estimate import generate_estimate, save_inquiry_data
+from app.schemas.estimate import EstimateRequest, InquiryRequest, PreviewRequest
+from app.services.estimate import generate_estimate, save_inquiry_data, generate_preview
 
 router = APIRouter()
 
@@ -15,3 +15,7 @@ async def submit_inquiry(request: InquiryRequest):
         return {"message": "Inquiry submitted successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+@router.post("/preview")
+async def estimate(request: PreviewRequest):
+    return await generate_preview(request.answers)

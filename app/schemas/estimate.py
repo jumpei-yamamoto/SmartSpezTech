@@ -17,4 +17,8 @@ class InquiryRequest(BaseModel):
 class EstimateRequest(BaseModel):
     answers: Dict[str, Any]
 
+
+class PreviewRequest(BaseModel):
+    answers: Dict[str, Any]
+
 # 他のスキーマ定義...

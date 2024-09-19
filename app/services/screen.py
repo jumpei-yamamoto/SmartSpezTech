@@ -1,5 +1,10 @@
+import logging
 from openai import AsyncOpenAI
 import os
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 aclient = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
@@ -12,6 +17,7 @@ async def create_screen_list(answers):
 {answers}
 """
 
+    logger.info("Sending request to OpenAI for create_screen_list with prompt: %s", prompt)
     response = await aclient.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -19,6 +25,7 @@ async def create_screen_list(answers):
             {"role": "user", "content": prompt}
         ]
     )
+    logger.info("Received response from OpenAI for create_screen_list: %s", response)
 
     screen_list = response.choices[0].message.content.strip().split("\n")
     return [screen.strip("- ").strip() for screen in screen_list if screen]
@@ -32,6 +39,7 @@ async def estimate_total_workload(answers):
 {answers}
 """
 
+    logger.info("Sending request to OpenAI for estimate_total_workload with prompt: %s", prompt)
     response = await aclient.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -39,6 +47,7 @@ async def estimate_total_workload(answers):
             {"role": "user", "content": prompt}
         ]
     )
+    logger.info("Received response from OpenAI for estimate_total_workload: %s", response)
 
     return response.choices[0].message.content.strip()
 
@@ -63,6 +72,7 @@ async def estimate_screen_workload(screen, answers):
 {answers}
 """
 
+    logger.info("Sending request to OpenAI for estimate_screen_workload with prompt: %s", prompt)
     response = await aclient.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -70,6 +80,7 @@ async def estimate_screen_workload(screen, answers):
             {"role": "user", "content": prompt}
         ]
     )
+    logger.info("Received response from OpenAI for estimate_screen_workload: %s", response)
 
     return response.choices[0].message.content.strip()
 
@@ -89,6 +100,7 @@ async def create_basic_design(screen, answers):
 {template}
 """
 
+    logger.info("Sending request to OpenAI for create_basic_design with prompt: %s", prompt)
     response = await aclient.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -96,6 +108,7 @@ async def create_basic_design(screen, answers):
             {"role": "user", "content": prompt}
         ]
     )
+    logger.info("Received response from OpenAI for create_basic_design: %s", response)
 
     return response.choices[0].message.content.strip()
 
@@ -110,6 +123,7 @@ async def create_screen_sample(screen, answers):
     {answers}
     """
 
+    logger.info("Sending request to OpenAI for create_screen_sample with prompt: %s", prompt)
     response = await aclient.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -117,5 +131,39 @@ async def create_screen_sample(screen, answers):
             {"role": "user", "content": prompt}
         ]
     )
+    logger.info("Received response from OpenAI for create_screen_sample: %s", response)
 
     return response.choices[0].message.content.strip()
+
+async def preview_screen_list(answers):
+    prompt = f"""
+以下のプロジェクト要件に基づいて、想定される主要な画面の一覧とその機能を提示してください。
+各画面名を簡潔に記述し、必ず3つのリストとして返してください。
+
+プロジェクト要件:
+{answers}
+"""
+
+    logger.info("Sending request to OpenAI for preview_screen_list with prompt: %s", prompt)
+    response = await aclient.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "あなたはWebサイトのUI/UXデザイン専門家です。必ず3つの主要な画面を提案してください。"},
+            {"role": "user", "content": prompt}
+        ]
+    )
+    logger.info("Received response from OpenAI for preview_screen_list: %s", response)
+
+    screen_list = response.choices[0].message.content.strip().split("\n")
+    screen_list = [screen.strip("- ").strip() for screen in screen_list if screen]
+    
+    # 2つ目から4つ目の画面を取得
+    screen_list = screen_list[1:4]
+    
+    # 必ず3つの画面を返すように調整
+    if len(screen_list) > 3:
+        screen_list = screen_list[:3]
+    elif len(screen_list) < 3:
+        screen_list.extend(["追加画面"] * (3 - len(screen_list)))
+    
+    return screen_list

@@ -1,12 +1,18 @@
 import asyncio
 from app.services.analysis import analyze_with_gpt, analyze_sentiment, extract_keywords
 from app.services.requirements import create_system_requirements_specification, create_requirements_definition
-from app.services.screen import create_screen_list, estimate_total_workload
+from app.services.preview import generate_title, generate_catchphrase, generate_description, generate_preview_screen
+from app.services.screen import create_screen_list, estimate_total_workload, preview_screen_list
 from app.schemas.estimate import InquiryRequest
 from app.database import get_db
 from app.models.estimate import Estimate
 import json
 from sqlalchemy.orm import Session
+from openai import AsyncOpenAI
+import os
+import logging
+
+aclient = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 async def generate_estimate(answers):
     tasks = [
@@ -65,3 +71,37 @@ async def save_inquiry_data(request: InquiryRequest):
         raise e
     finally:
         db.close()
+
+async def generate_preview(answers):
+
+    # まずはユーザーの回答から3つの主要画面を生成する
+    screens = await preview_screen_list(answers)  # ここでawaitを追加
+    # 生成された画面のプレビューを生成する
+    results = []
+    for screen in screens:
+        title = await generate_title(screen)
+        catchphrase = await generate_catchphrase(screen)
+        description = await generate_description(screen)
+        preview = await generate_preview_screen(screen)
+        results.append({
+            "title": title,
+            "catchphrase": catchphrase,
+            "description": description,
+            "preview": preview
+        })
+    
+
+    # Configure logging
+    logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger(__name__)
+
+    # Log the results before returning
+    logger.info("Generated preview results:")
+    for i, result in enumerate(results):
+        logger.info(f"Screen {i + 1}:")
+        logger.info(f"  Title: {result['title']}")
+        logger.info(f"  Catchphrase: {result['catchphrase']}")
+        logger.info(f"  Description: {result['description']}")
+        logger.info(f"  Preview: {result['preview'][:100]}...")  # Log first 100 characters of preview
+
+    return results  # Changed to return the entire results list
