@@ -40,6 +40,7 @@ jobs:
 
       - name: Deploy to Elastic Beanstalk
         run: |
+          eb init ${{ env.EB_APP_NAME }} --platform docker --region ${{ env.AWS_REGION }}
           eb use ${{ env.EB_ENV_NAME }}
           eb setenv OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" \
                     DATABASE_URL="postgresql://postgres:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.RDS_ENDPOINT }}:5432/mydatabase"
