@@ -35,7 +35,7 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y postgresql-client
           psql "host=${{ secrets.RDS_ENDPOINT }} port=5432 user=postgres password=${{ secrets.POSTGRES_PASSWORD }} dbname=postgres sslmode=require" \
-            -c "DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = 'mydatabase') THEN CREATE DATABASE mydatabase; END IF; END $$;"
+            -c "DO \$\$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = 'mydatabase') THEN CREATE DATABASE mydatabase; END IF; END \$\$;"
 
       - name: Deploy to Elastic Beanstalk
         run: |
