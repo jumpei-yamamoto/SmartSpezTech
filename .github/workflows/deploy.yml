@@ -35,9 +35,15 @@ jobs:
         run: |
           eb init -p python-3.9 ${{ env.EB_APP_NAME }} --region ${{ env.AWS_REGION }}
 
+      - name: Create mydatabase on RDS
+        run: |
+          sudo apt-get update && sudo apt-get install -y postgresql-client
+          psql "host=${{ secrets.RDS_ENDPOINT }} user=postgres password=${{ secrets.POSTGRES_PASSWORD }} dbname=postgres" \
+            -c "DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = 'mydatabase') THEN CREATE DATABASE mydatabase; END IF; END $$;"
+
       - name: Deploy to Elastic Beanstalk
         run: |
           eb use ${{ env.EB_ENV_NAME }}
           eb setenv OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" \
-                    DATABASE_URL="postgresql://postgres:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.RDS_ENDPOINT }}:5432/database-1"
+                    DATABASE_URL="postgresql://postgres:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.RDS_ENDPOINT }}:5432/mydatabase"
           eb deploy --staged
