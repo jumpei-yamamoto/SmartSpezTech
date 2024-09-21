@@ -31,8 +31,16 @@ jobs:
         run: |
           pip install awsebcli
 
+      - name: Configure Elastic Beanstalk CLI
+        run: |
+          eb init ${{ env.EB_APP_NAME }} \
+            --region ${{ env.AWS_REGION }} \
+            --platform "Python 3.8" \
+            --verbose
+
       - name: Check Elastic Beanstalk status
         run: |
+          eb use ${{ env.EB_ENV_NAME }}
           STATUS=$(eb status | grep Status | awk '{print $2}')
           if [ "$STATUS" != "Ready" ]; then
             echo "Environment is not ready. Current status: $STATUS"
