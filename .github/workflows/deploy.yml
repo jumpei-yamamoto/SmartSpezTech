@@ -39,5 +39,5 @@ jobs:
         run: |
           eb use ${{ env.EB_ENV_NAME }}
           eb setenv OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" \
-                    DATABASE_URL="postgresql://ebroot:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.RDS_ENDPOINT }}:5432/postgres"
+                    DATABASE_URL="postgresql://postgres:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.RDS_ENDPOINT }}:5432/database-1"
           eb deploy --staged
