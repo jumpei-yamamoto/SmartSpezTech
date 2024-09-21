@@ -8,11 +8,21 @@ class SimulationResult(BaseModel):
     estimate_develop: str
     answers: Dict[str, Optional[Union[str, List[str]]]]
 
+class SimulationData(BaseModel):
+    title: str
+    catchphrase: str
+    description: str
+    preview: str  # Changed from List[str] to str
+    answers: Dict[str, Any]
+
+class SimulationDataList(BaseModel):
+    simulationData: List[SimulationData]
+
 class InquiryRequest(BaseModel):
     name: str
     email: str
     message: str
-    simulationResult: SimulationResult
+    simulationData: List[SimulationData]  # Changed from SimulationDataList to List[SimulationData]
 
 class EstimateRequest(BaseModel):
     answers: Dict[str, Any]

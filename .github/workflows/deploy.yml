@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - feature/phase2
+      - feature/phase3
   repository_dispatch:
     types: [deploy_backend]
 
@@ -38,5 +38,6 @@ jobs:
       - name: Deploy to Elastic Beanstalk
         run: |
           eb use ${{ env.EB_ENV_NAME }}
-          eb setenv OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}"
+          eb setenv OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" \
+                    DATABASE_URL="postgresql://ebroot:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.RDS_ENDPOINT }}:5432/mydatabase"
           eb deploy --staged

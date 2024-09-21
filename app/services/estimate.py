@@ -5,7 +5,7 @@ from app.services.preview import generate_title, generate_catchphrase, generate_
 from app.services.screen import create_screen_list, estimate_total_workload, preview_screen_list
 from app.schemas.estimate import InquiryRequest
 from app.database import get_db
-from app.models.estimate import Estimate
+from app.models.estimate import Estimate, Screen
 import json
 from sqlalchemy.orm import Session
 from openai import AsyncOpenAI
@@ -49,20 +49,28 @@ GPTによる分析:
     }
 
 async def save_inquiry_data(request: InquiryRequest):
-    new_estimate = Estimate(
-        name=request.name,
-        email=request.email,
-        inquiry=request.message,
-        requirements_specification=request.simulationResult.requirements_specification,
-        requirements_definition=request.simulationResult.requirements_definition,
-        screens=json.dumps(request.simulationResult.screens),
-        estimate_develop=request.simulationResult.estimate_develop,
-        analysis=json.dumps(request.simulationResult.answers)
-    )
-    
     db: Session = next(get_db())
     try:
+        new_estimate = Estimate(
+            name=request.name,
+            email=request.email,
+            inquiry=request.message,
+            answers=json.dumps(request.simulationData[0].answers)  # JSON文字列に変換
+        )
         db.add(new_estimate)
+        db.flush()  # IDを生成するためにflushする
+
+        # Screenモデルを生成して保存
+        for screen_data in request.simulationData:
+            new_screen = Screen(
+                estimate_id=new_estimate.id,
+                title=screen_data.title,
+                catchphrase=screen_data.catchphrase,
+                description=screen_data.description,
+                preview=screen_data.preview
+            )
+            db.add(new_screen)
+
         db.commit()
         db.refresh(new_estimate)
         return new_estimate
@@ -82,12 +90,13 @@ async def generate_preview(answers):
         title = await generate_title(screen)
         catchphrase = await generate_catchphrase(screen)
         description = await generate_description(screen)
-        preview = await generate_preview_screen(screen)
+        previews = await generate_preview_screen(screen)  # This should now return a list of strings
         results.append({
             "title": title,
             "catchphrase": catchphrase,
             "description": description,
-            "preview": preview
+            "preview": previews,  # This is now a list
+            "answers": answers
         })
     
 
