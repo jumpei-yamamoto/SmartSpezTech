@@ -31,16 +31,16 @@ jobs:
         run: |
           pip install awsebcli
 
-      - name: Create mydatabase on RDS if not exists
+      - name: Check Elastic Beanstalk status
         run: |
-          sudo apt-get update && sudo apt-get install -y postgresql-client
-          psql "host=${{ secrets.RDS_ENDPOINT }} port=5432 user=postgres password=${{ secrets.POSTGRES_PASSWORD }} dbname=postgres sslmode=require" \
-            -c "SELECT 'CREATE DATABASE mydatabase' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'mydatabase');" \
-            -c "SELECT 'Database mydatabase already exists' WHERE EXISTS (SELECT FROM pg_database WHERE datname = 'mydatabase');"
+          STATUS=$(eb status | grep Status | awk '{print $2}')
+          if [ "$STATUS" != "Ready" ]; then
+            echo "Environment is not ready. Current status: $STATUS"
+            exit 1
+          fi
 
       - name: Deploy to Elastic Beanstalk
         run: |
-          eb init ${{ env.EB_APP_NAME }} --platform docker --region ${{ env.AWS_REGION }}
           eb use ${{ env.EB_ENV_NAME }}
           eb setenv OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" \
                     DATABASE_URL="postgresql://postgres:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.RDS_ENDPOINT }}:5432/mydatabase"
