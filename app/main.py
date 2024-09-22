@@ -57,7 +57,15 @@ async def root():
 
 @app.on_event("startup")
 async def startup_event():
+    # テーブル作成
     create_tables()
+
+    # データベース名を取得してログに出力
+    from sqlalchemy.orm import Session
+    with Session(engine) as session:
+        result = session.execute("SELECT current_database();")
+        database_name = result.scalar()
+        logger.info(f"現在接続しているデータベース: {database_name}")
 
 if __name__ == "__main__":
     logger.info("Main block executed")
