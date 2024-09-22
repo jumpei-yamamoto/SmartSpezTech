@@ -16,7 +16,10 @@ if ENVIRONMENT == "production":
     db_host = os.getenv("RDS_ENDPOINT")
     db_name = "mydatabase"
     DATABASE_URL = f"postgresql://{db_user}:{db_password}@{db_host}:5432/{db_name}"
+    logger.info(f"Using production database: {db_host}")
 else:
+    DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:password@db:5432/mydatabase")
+    logger.info("Using development database")
     DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:password@db:5432/mydatabase")
 
 engine = create_engine(DATABASE_URL)
