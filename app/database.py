@@ -7,7 +7,10 @@ from sqlalchemy.orm import sessionmaker
 logger = logging.getLogger(__name__)
 
 # 環境変数から接続情報を取得
-ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
+ENVIRONMENT = os.getenv("ENVIRONMENT", "development").lower()
+
+# ログに現在の環境を出力
+logger.info(f"Current ENVIRONMENT: {ENVIRONMENT}")
 
 # 環境に応じてDATABASE_URLを設定
 if ENVIRONMENT == "production":
@@ -20,19 +23,21 @@ if ENVIRONMENT == "production":
 else:
     DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:password@db:5432/mydatabase")
     logger.info("Using development database")
-    DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:password@db:5432/mydatabase")
 
+logger.info(f"Current database URL: {DATABASE_URL}")
+
+# SQLAlchemyエンジンの作成
 engine = create_engine(DATABASE_URL)
-logger.info(f"Current database URL: {engine.url}")
 
+# セッションとベースクラスの設定
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
 Base = declarative_base()
 
 # ロギングの設定を追加
 logging.basicConfig(level=logging.INFO, encoding='utf-8')
 logger = logging.getLogger(__name__)
 
+# テーブル作成関数
 def create_tables():
     try:
         inspector = inspect(engine)
@@ -51,6 +56,7 @@ def create_tables():
     except Exception as e:
         logger.error(f"An error occurred while creating tables: {str(e)}")
 
+# データベースセッション取得関数
 def get_db():
     db = SessionLocal()
     try:

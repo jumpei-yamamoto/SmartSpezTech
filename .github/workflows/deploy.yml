@@ -47,12 +47,19 @@ jobs:
             exit 1
           fi
 
-      - name: Deploy to Elastic Beanstalk
+      - name: Configure Elastic Beanstalk environment variables
         run: |
-          eb use ${{ env.EB_ENV_NAME }}
           eb setenv OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" \
                     RDS_POSTGRES_USER="${{ secrets.RDS_POSTGRES_USER }}" \
                     RDS_POSTGRES_PASSWORD="${{ secrets.RDS_POSTGRES_PASSWORD }}" \
                     RDS_ENDPOINT="${{ secrets.RDS_ENDPOINT }}" \
-                    ENVIRONMENT="production"
+                    ENVIRONMENT="production" || { echo 'setenv failed'; exit 1; }
+
+      - name: Wait for environment variables to be applied
+        run: |
+          sleep 10  # 環境変数が反映されるのを待機
+
+      - name: Deploy to Elastic Beanstalk
+        run: |
+          eb use ${{ env.EB_ENV_NAME }}
           eb deploy --staged
