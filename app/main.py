@@ -12,8 +12,8 @@ from app.models import estimate as estimate_model
 # .envファイルを読み込む
 load_dotenv()
 
-# ロギングの設定
-logging.basicConfig(level=logging.INFO)
+# ロギングの設定を修正
+logging.basicConfig(level=logging.INFO, encoding='utf-8')
 logger = logging.getLogger(__name__)
 
 logger.info("アプリケーションのインポートが完了しました")
