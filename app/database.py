@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 logger = logging.getLogger(__name__)
 
 # 環境変数から接続情報を取得
-ENVIRONMENT = os.getenv("ENVIRONMENT", "production").lower()
+ENVIRONMENT = os.getenv("ENVIRONMENT", "development").lower()
 
 # ログに現在の環境を出力
 logger.info(f"Current ENVIRONMENT: {ENVIRONMENT}")
