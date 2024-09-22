@@ -1,6 +1,12 @@
-from sqlalchemy import Column, Integer, String, Text, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, Enum
 from sqlalchemy.orm import relationship
 from app.database import Base  # Baseはdatabase.pyで宣言したdeclarative_base()
+import enum
+
+class EstimateStatus(enum.Enum):
+    PENDING = 0
+    ACCEPTED = 1
+    CANCELLED = 2
 
 class Estimate(Base):
     __tablename__ = 'estimate_data'  # テーブル名
@@ -10,6 +16,7 @@ class Estimate(Base):
     email = Column(String, index=True)
     inquiry = Column(Text)
     answers = Column(Text)
+    status = Column(Enum(EstimateStatus), default=EstimateStatus.PENDING, nullable=False)
 
     # 画面情報との関連付け
     screens = relationship("Screen", back_populates="estimate")
