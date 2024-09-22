@@ -16,11 +16,11 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO, encoding='utf-8')
 logger = logging.getLogger(__name__)
 
-logger.info("アプリケーションのインポートが完了しました")
+logger.info("Application imports completed")
 
 app = FastAPI()
 
-logger.info("FastAPIアプリケーションが作成されました")
+logger.info("FastAPI application created")
 
 # モデルに基づいてテーブルを作成
 # estimate_model.Base.metadata.create_all(bind=engine)
@@ -57,12 +57,12 @@ async def root():
 
 @app.on_event("startup")
 async def startup_event():
-    logger.info("アプリケーションの起動を開始します。")
+    logger.info("Starting application...")
     create_tables()
-    logger.info("アプリケーションの起動が完了しました。")
+    logger.info("Application startup completed.")
 
 if __name__ == "__main__":
-    logger.info("メインブロックが実行されました")
+    logger.info("Main block executed")
     import uvicorn
     port = int(os.environ.get("PORT", 8000))
     uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)

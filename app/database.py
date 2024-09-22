@@ -18,9 +18,9 @@ logger = logging.getLogger(__name__)
 def create_tables():
     try:
         Base.metadata.create_all(bind=engine)
-        logger.info("テーブルの作成に成功しました。")
+        logger.info("Tables created successfully.")
     except Exception as e:
-        logger.error(f"テーブルの作成中にエラーが発生しました: {str(e)}")
+        logger.error(f"An error occurred while creating tables: {str(e)}")
 
 # アプリケーション起動時にこの関数を呼び出す
 
