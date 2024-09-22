@@ -6,15 +6,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routers import form, screen
 from app.routers import estimate as estimate_router
 from app.middleware.content_security_policy import ContentSecurityPolicyMiddleware
-from app.database import engine, get_db
+from app.database import engine, get_db, create_tables
 from app.models import estimate as estimate_model
-from .database import create_tables
 
 # .envファイルを読み込む
 load_dotenv()
 
 # ロギングの設定
 logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
@@ -53,7 +53,9 @@ async def root():
 
 @app.on_event("startup")
 async def startup_event():
+    logger.info("アプリケーションの起動を開始します。")
     create_tables()
+    logger.info("アプリケーションの起動が完了しました。")
 
 if __name__ == "__main__":
     import uvicorn

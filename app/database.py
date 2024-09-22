@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
+import logging
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
@@ -10,8 +11,14 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
 
+logger = logging.getLogger(__name__)
+
 def create_tables():
-    Base.metadata.create_all(bind=engine)
+    try:
+        Base.metadata.create_all(bind=engine)
+        logger.info("テーブルの作成に成功しました。")
+    except Exception as e:
+        logger.error(f"テーブルの作成中にエラーが発生しました: {str(e)}")
 
 # アプリケーション起動時にこの関数を呼び出す
 
