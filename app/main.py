@@ -8,6 +8,7 @@ from app.routers import estimate as estimate_router
 from app.middleware.content_security_policy import ContentSecurityPolicyMiddleware
 from app.database import engine, get_db
 from app.models import estimate as estimate_model
+from .database import create_tables
 
 # .envファイルを読み込む
 load_dotenv()
@@ -18,7 +19,7 @@ logging.basicConfig(level=logging.INFO)
 app = FastAPI()
 
 # モデルに基づいてテーブルを作成
-estimate_model.Base.metadata.create_all(bind=engine)
+# estimate_model.Base.metadata.create_all(bind=engine)
 
 # CORSミドルウェアの設定
 origins = [
@@ -49,6 +50,10 @@ app.include_router(screen.router)
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
+
+@app.on_event("startup")
+async def startup_event():
+    create_tables()
 
 if __name__ == "__main__":
     import uvicorn

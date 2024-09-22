@@ -10,6 +10,11 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
 
+def create_tables():
+    Base.metadata.create_all(bind=engine)
+
+# アプリケーション起動時にこの関数を呼び出す
+
 def get_db():
     db = SessionLocal()
     try:
