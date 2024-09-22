@@ -53,7 +53,7 @@ jobs:
                     RDS_POSTGRES_USER="${{ secrets.RDS_POSTGRES_USER }}" \
                     RDS_POSTGRES_PASSWORD="${{ secrets.RDS_POSTGRES_PASSWORD }}" \
                     RDS_ENDPOINT="${{ secrets.RDS_ENDPOINT }}" \
-                    ENVIRONMENT="production" || { echo 'setenv failed'; exit 1; }
+                    ENVIRONMENT="${{ secrets.RDS_ENVIRONMENT }}" || { echo 'setenv failed'; exit 1; }
 
       - name: Wait for environment variables to be applied
         run: |
