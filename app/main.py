@@ -8,6 +8,7 @@ from app.routers import estimate as estimate_router
 from app.middleware.content_security_policy import ContentSecurityPolicyMiddleware
 from app.database import engine, get_db, create_tables
 from app.models import estimate as estimate_model
+from sqlalchemy import text
 
 # .envファイルを読み込む
 load_dotenv()
@@ -63,7 +64,7 @@ async def startup_event():
     # データベース名を取得してログに出力
     from sqlalchemy.orm import Session
     with Session(engine) as session:
-        result = session.execute("SELECT current_database();")
+        result = session.execute(text("SELECT current_database();"))
         database_name = result.scalar()
         logger.info(f"現在接続しているデータベース: {database_name}")
 
