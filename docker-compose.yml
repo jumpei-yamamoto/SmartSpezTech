@@ -13,6 +13,7 @@ services:
       - PYTHONUNBUFFERED=1
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - DATABASE_URL=postgresql://postgres:password@db:5432/mydatabase
+      - ENVIRONMENT=development
     command: uvicorn app.main:app --host 0.0.0.0 --port 80
     depends_on:
       - db
@@ -22,9 +23,9 @@ services:
   db:
     image: postgres:13
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: mydatabase
+      RDS_POSTGRES_USER: postgres
+      RDS_POSTGRES_PASSWORD: password
+      RDS_POSTGRES_DB: mydatabase
     ports:
       - "5432:5432"
     volumes:

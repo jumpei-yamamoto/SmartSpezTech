@@ -1,15 +1,27 @@
+import os
+import logging
 from sqlalchemy import create_engine, inspect
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-import os
-import logging
+
 logger = logging.getLogger(__name__)
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+# 環境変数から接続情報を取得
+ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
+
+# 環境に応じてDATABASE_URLを設定
+if ENVIRONMENT == "production":
+    db_user = os.getenv("RDS_POSTGRES_USER")
+    db_password = os.getenv("RDS_POSTGRES_PASSWORD")
+    db_host = os.getenv("RDS_ENDPOINT")
+    db_name = "mydatabase"
+    DATABASE_URL = f"postgresql://{db_user}:{db_password}@{db_host}:5432/{db_name}"
+else:
+    DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:password@db:5432/mydatabase")
 
 engine = create_engine(DATABASE_URL)
-# エンドポイントをログに出力
-logger.info(f"current database URL: {engine.url}")
+logger.info(f"Current database URL: {engine.url}")
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
