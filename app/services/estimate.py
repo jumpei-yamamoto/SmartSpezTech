@@ -73,6 +73,22 @@ async def save_inquiry_data(request: InquiryRequest):
 
         db.commit()
         db.refresh(new_estimate)
+        
+        logging.info("database saved check")
+        # データベースから保存されたデータを再取得して確認
+        saved_estimate = db.query(Estimate).filter(Estimate.id == new_estimate.id).first()
+        
+        if saved_estimate:
+            logging.info(f"新しい見積もりがデータベースに正常に保存されました。ID: {saved_estimate.id}")
+            logging.info(f"名前: {saved_estimate.name}, メール: {saved_estimate.email}")
+            logging.info(f"問い合わせ内容: {saved_estimate.inquiry[:100]}...")  # 最初の100文字のみログ出力
+            
+            # 関連する画面情報も確認
+            for screen in saved_estimate.screens:
+                logging.info(f"画面情報 - タイトル: {screen.title}, キャッチフレーズ: {screen.catchphrase}")
+        else:
+            logging.error(f"見積もり（ID: {new_estimate.id}）のデータベースへの保存が確認できませんでした。")
+        
         return new_estimate
     except Exception as e:
         db.rollback()
