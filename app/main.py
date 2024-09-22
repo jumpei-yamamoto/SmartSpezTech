@@ -57,9 +57,7 @@ async def root():
 
 @app.on_event("startup")
 async def startup_event():
-    logger.info("Starting application...")
     create_tables()
-    logger.info("Application startup completed.")
 
 if __name__ == "__main__":
     logger.info("Main block executed")
