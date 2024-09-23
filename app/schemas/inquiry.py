@@ -4,8 +4,8 @@ from typing import List, Optional
 class ScreenResponse(BaseModel):
     id: int
     title: str
-    catchphrase: str
-    description: str
+    catchphrase: Optional[str] = None
+    description: Optional[str] = None
     preview: str
 
 class InquiryResponse(BaseModel):
