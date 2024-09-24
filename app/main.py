@@ -3,7 +3,7 @@ import logging
 from dotenv import load_dotenv
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import form, screen, estimate as estimate_router, inquiry  # inquiryをインポート
+from app.routers import form, screen, estimate as estimate_router, inquiry, joblist
 from app.middleware.content_security_policy import ContentSecurityPolicyMiddleware
 from app.database import engine, get_db, create_tables
 from app.models import estimate as estimate_model
@@ -50,7 +50,8 @@ app.add_middleware(ContentSecurityPolicyMiddleware)
 app.include_router(form.router)
 app.include_router(estimate_router.router)
 app.include_router(screen.router)
-app.include_router(inquiry.router)  # 新しいルーターを追加
+app.include_router(inquiry.router)  
+app.include_router(joblist.router) 
 
 @app.get("/")
 async def root():

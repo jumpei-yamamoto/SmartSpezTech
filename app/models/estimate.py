@@ -18,7 +18,7 @@ class Estimate(Base):
     email = Column(String, index=True)
     inquiry = Column(Text)
     answers = Column(Text)
-    status = Column(Enum(EstimateStatus), default=EstimateStatus.PENDING, nullable=False)
+    status = Column(Integer, default=EstimateStatus.PENDING, nullable=False)  # Integer 型を使用
 
     # 画面情報との関連付け
     screens = relationship("Screen", back_populates="estimate")

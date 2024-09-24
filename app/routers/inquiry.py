@@ -174,4 +174,3 @@ def accept_order(request: AcceptOrderRequest, db: Session = Depends(get_db)):
     
     return {"message": "Order accepted and data saved successfully"}
 
-# ... 既存のコード ...
