@@ -116,6 +116,7 @@ async def create_screen_sample(screen, answers):
     prompt = f"""
     以下の画面と全体のプロジェクト要件に基づいて、この画面のサンプルデザインをHTMLとTailwind CSSで作成してください。
     必要に応じてJavaScriptも含めてください。
+    
     コードは一つのコードブロックで提供してください。
 
     画面名: {screen}
