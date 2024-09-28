@@ -1,7 +1,8 @@
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, Enum, JSON
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, Enum, JSON, Float
 from sqlalchemy.orm import relationship
 from app.database import Base  # Baseはdatabase.pyで宣言したdeclarative_base()
 from enum import IntEnum
+from sqlalchemy.dialects.postgresql import ARRAY
 
 class EstimateStatus(IntEnum):
     PENDING = 0
@@ -74,12 +75,14 @@ class Relation(Base):
     estimate = relationship("Estimate", back_populates="relations")
 
 class AIResponse(Base):
-    __tablename__ = 'ai_responses'
+    __tablename__ = "ai_responses"
 
     id = Column(Integer, primary_key=True, index=True)
-    estimate_id = Column(Integer, ForeignKey('estimate_data.id'), unique=True)
-    features = Column(JSON)
-    requirements = Column(JSON)
+    estimate_id = Column(Integer, ForeignKey("estimate_data.id"))
+    screens = Column(JSON)
+    events = Column(JSON)
+    database = Column(JSON)
 
     estimate = relationship("Estimate", back_populates="ai_response")
+
 

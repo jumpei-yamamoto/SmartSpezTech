@@ -1,10 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Dict, Any
 from app.database import get_db
-from app.models.estimate import Estimate, Screen, EstimateStatus, Event, Entity, Relation, AIResponse as AIResponseModel  # SQLAlchemy model
+from app.models.estimate import Estimate, Screen, EstimateStatus, Event, Entity, Relation, AIResponse as AIResponseModel
 from app.schemas.inquiry import InquiryResponse, ScreenResponse
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError
+import logging
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -99,13 +102,39 @@ class EntityData(BaseModel):
 
 class RelationData(BaseModel):
     id: int
-    from_: str = Field(alias="from")
+    from_: str 
     to: str
     type: str
 
+
 class AIResponse(BaseModel):
+    features: List[str] = []
+    requirements: List[str] = []
+
+class EstimateData(BaseModel):
+    estimate_hours: float
     features: List[str]
     requirements: List[str]
+
+class ScreenEstimate(BaseModel):
+    workload: str
+    difficulty: int
+    tests: List[str]
+
+class EventEstimate(BaseModel):
+    workload: str
+    difficulty: int
+    tests: List[str]
+
+class DatabaseEstimate(BaseModel):
+    workload: str
+    difficulty: int
+    tests: List[str]
+
+class AIEstimate(BaseModel):
+    screens: Dict[str, ScreenEstimate]
+    events: Dict[str, EventEstimate]
+    database: DatabaseEstimate
 
 class AcceptOrderRequest(BaseModel):
     inquiryId: int
@@ -113,64 +142,78 @@ class AcceptOrderRequest(BaseModel):
     events: List[EventData]
     entities: List[EntityData]
     relations: List[RelationData]
-    aiResponse: AIResponse
+    aiEstimate: AIEstimate
 
-# When interacting with the database, use AIResponseModel instead of AIResponse
 @router.post("/api/accept-order")
-def accept_order(request: AcceptOrderRequest, db: Session = Depends(get_db)):
-    estimate = db.query(Estimate).filter(Estimate.id == request.inquiryId).first()
-    if not estimate:
-        raise HTTPException(status_code=404, detail="Estimate not found")
+async def accept_order(request: AcceptOrderRequest, db: Session = Depends(get_db)):
+    try:
+        logger.info(f"Received accept order request: {request.dict()}")
+
+        # エスティメートを取得
+        estimate = db.query(Estimate).filter(Estimate.id == request.inquiryId).first()
+        if not estimate:
+            raise HTTPException(status_code=404, detail="Estimate not found")
+        
+        # エスティメートのステータスを更新
+        estimate.status = EstimateStatus.ACCEPTED
+
+        # Screensをデータベースに追加
+        for screen_data in request.screens:
+            screen = Screen(
+                estimate_id=estimate.id,
+                title=screen_data.name,
+                preview=screen_data.html
+            )
+            db.add(screen)
+
+        # Eventsをデータベースに追加
+        for event_data in request.events:
+            event = Event(
+                estimate_id=estimate.id,
+                name=event_data.name,
+                screen=event_data.screen,
+                process=event_data.process
+            )
+            db.add(event)
+
+        # Entitiesをデータベースに追加
+        for entity_data in request.entities:
+            entity = Entity(
+                estimate_id=estimate.id,
+                name=entity_data.name,
+                attributes=entity_data.attributes
+            )
+            db.add(entity)
+
+        # Relationsをデータベースに追加
+        for relation_data in request.relations:
+            relation = Relation(
+                estimate_id=estimate.id,
+                from_=relation_data.from_,  
+                to=relation_data.to,
+                type=relation_data.type
+            )
+            db.add(relation)
+
+        # AIResponseの保存
+        # screens, events, databaseを辞書に変換
+        ai_estimate = AIResponseModel(
+            estimate_id=estimate.id,
+            screens={k: v.dict() for k, v in request.aiEstimate.screens.items()},  # screensを辞書に変換
+            events={k: v.dict() for k, v in request.aiEstimate.events.items()},    # eventsを辞書に変換
+            database=request.aiEstimate.database.dict()  # databaseを辞書に変換
+        )
+        db.add(ai_estimate)
+
+        # データベースにコミット
+        db.commit()
+        
+        return {"message": "Order accepted and data saved successfully"}
     
-    estimate.status = EstimateStatus.ACCEPTED
-
-    # Screens
-    for screen_data in request.screens:
-        screen = Screen(
-            estimate_id=estimate.id,
-            title=screen_data.name,
-            preview=screen_data.html
-        )
-        db.add(screen)
-
-    # Events
-    for event_data in request.events:
-        event = Event(
-            estimate_id=estimate.id,
-            name=event_data.name,
-            screen=event_data.screen,
-            process=event_data.process
-        )
-        db.add(event)
-
-    # Entities
-    for entity_data in request.entities:
-        entity = Entity(
-            estimate_id=estimate.id,
-            name=entity_data.name,
-            attributes=entity_data.attributes
-        )
-        db.add(entity)
-
-    # Relations
-    for relation_data in request.relations:
-        relation = Relation(
-            estimate_id=estimate.id,
-            from_=relation_data.from_,
-            to=relation_data.to,
-            type=relation_data.type
-        )
-        db.add(relation)
-
-    # AI Response
-    ai_response = AIResponseModel(
-        estimate_id=estimate.id,
-        features=request.aiResponse.features,
-        requirements=request.aiResponse.requirements
-    )
-    db.add(ai_response)
-
-    db.commit()
+    except ValidationError as e:
+        logger.error(f"Validation error: {e.json()}")
+        raise HTTPException(status_code=422, detail=e.errors())
     
-    return {"message": "Order accepted and data saved successfully"}
-
+    except Exception as e:
+        logger.error(f"Unexpected error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
