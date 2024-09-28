@@ -2,12 +2,63 @@ import asyncio  # Add this import statement
 from openai import AsyncOpenAI
 import os
 import logging  # Add this import statement
+import random  # テンプレート選択のためにrandomをインポート
+import re  # 正規表現を使用するためにインポート
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 aclient = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+# テンプレートを読み込む関数
+def load_templates():
+    templates = {}
+    template_dir = "app/templates"  # テンプレートファイルのディレクトリ
+    for filename in os.listdir(template_dir):
+        if filename.endswith(".html"):
+            with open(os.path.join(template_dir, filename), "r") as file:
+                templates[filename] = file.read()
+    return templates
+
+# テンプレートを選択する関数を改善
+async def select_template(templates, screen_info):
+    keyword = await extract_keywords(screen_info)
+    
+    for filename, content in templates.items():
+        if keyword in filename.lower():
+            return content
+    
+    # キーワードに完全一致するテンプレートがない場合はデフォルトのテンプレートを返す
+    return templates.get("default.html", "")
+
+# キーワード抽出関数を更新
+async def extract_keywords(text):
+    important_keywords = [
+        "login", "signup", "dashboard",  "settings", "list", "detail",
+        "form", "search", "report", "user", "admin", "default"
+    ]
+    
+    prompt = f"""
+    以下の画面情報から、最も適切なキーワードを1つ選択してください。
+    選択肢: {', '.join(important_keywords)}
+
+    画面情報:
+    {text}
+
+    回答は選択肢の中から1つのキーワードのみを返してください。 もし該当するキーワードがない場合は、"default"を返してください。
+    """
+    
+    logger.info(f"Extracting keyword with prompt: {prompt}")
+    response = await aclient.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "あなたは画面情報からキーワードを抽出する専門家です。与えられた選択肢から最も適切なキーワードを1つだけ選んでください。"},
+            {"role": "user", "content": prompt}
+        ]
+    )
+    logger.info(f"Received response: {response}")
+    return response.choices[0].message.content.strip().lower()
 
 async def generate_title(answer):
     prompt = f"""
@@ -67,8 +118,11 @@ async def generate_description(answer):
     return response.choices[0].message.content.strip()
 
 async def generate_preview_screen(screen):
+    templates = load_templates()
+    selected_template = await select_template(templates, screen)
+    
     prompt = f"""
-    以下の画面情報に基づいて、この画面のサンプルデザインをHTMLとTailwind CSSで作成してください。
+    以下の画面情報とHTMLテンプレートに基づいて、この画面のサンプルデザインをHTMLとTailwind CSSで作成してください。
     必要に応じてJavaScriptも含めてください。
     コードは一つのコードブロックで提供してください。
     ボタンやリンク・リストボックスなどのインタラクティブな要素は実装してください。またidをつけてください。
@@ -79,7 +133,11 @@ async def generate_preview_screen(screen):
     説明や追加のコメントは含めず、実装のコードのみを返してください。
 
     画面情報: {screen}
+
+    HTMLテンプレート:
+    {selected_template}
     """
+    
     logger.info(f"Generating preview screen with prompt: {prompt}")
     response = await aclient.chat.completions.create(
         model="gpt-4o-mini",

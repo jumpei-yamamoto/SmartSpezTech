@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ja" class="h-full bg-gray-100">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>アカウント設定</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"
+      defer
+    ></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#3B82F6",
+              "primary-dark": "#2563EB",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="h-full" x-data="{ activeTab: 'profile' }">
+    <div class="min-h-full">
+      <header class="bg-white shadow">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+          <h1 class="text-3xl font-bold text-gray-900">アカウント設定</h1>
+        </div>
+      </header>
+      <main>
+        <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+          <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="p-6 bg-white border-b border-gray-200">
+              <div class="border-b border-gray-200">
+                <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                  <button
+                    @click="activeTab = 'profile'"
+                    :class="{'border-primary text-primary': activeTab === 'profile', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'profile'}"
+                    class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                  >
+                    プロフィール
+                  </button>
+                  <button
+                    @click="activeTab = 'notifications'"
+                    :class="{'border-primary text-primary': activeTab === 'notifications', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'notifications'}"
+                    class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                  >
+                    通知
+                  </button>
+                  <button
+                    @click="activeTab = 'security'"
+                    :class="{'border-primary text-primary': activeTab === 'security', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'security'}"
+                    class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                  >
+                    セキュリティ
+                  </button>
+                </nav>
+              </div>
+
+              <!-- プロフィール設定 -->
+              <div x-show="activeTab === 'profile'" class="mt-6">
+                <form action="#" method="POST">
+                  <div class="shadow sm:rounded-md sm:overflow-hidden">
+                    <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700">
+                          プロフィール画像
+                        </label>
+                        <div class="mt-1 flex items-center">
+                          <span
+                            class="inline-block h-12 w-12 rounded-full overflow-hidden bg-gray-100"
+                          >
+                            <img
+                              src="/placeholder.svg?height=48&width=48"
+                              alt="現在のプロフィール画像"
+                              class="h-full w-full object-cover"
+                            />
+                          </span>
+                          <button
+                            type="button"
+                            class="ml-5 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                          >
+                            変更
+                          </button>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label
+                          for="name"
+                          class="block text-sm font-medium text-gray-700"
+                        >
+                          名前
+                        </label>
+                        <div class="mt-1">
+                          <input
+                            type="text"
+                            name="name"
+                            id="name"
+                            class="shadow-sm focus:ring-primary focus:border-primary block w-full sm:text-sm border-gray-300 rounded-md"
+                            value="山田 太郎"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label
+                          for="email"
+                          class="block text-sm font-medium text-gray-700"
+                        >
+                          メールアドレス
+                        </label>
+                        <div class="mt-1">
+                          <input
+                            type="email"
+                            name="email"
+                            id="email"
+                            class="shadow-sm focus:ring-primary focus:border-primary block w-full sm:text-sm border-gray-300 rounded-md"
+                            value="taro.yamada@example.com"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label
+                          for="bio"
+                          class="block text-sm font-medium text-gray-700"
+                        >
+                          自己紹介
+                        </label>
+                        <div class="mt-1">
+                          <textarea
+                            id="bio"
+                            name="bio"
+                            rows="3"
+                            class="shadow-sm focus:ring-primary focus:border-primary block w-full sm:text-sm border-gray-300 rounded-md"
+                          ></textarea>
+                        </div>
+                        <p class="mt-2 text-sm text-gray-500">
+                          簡単な自己紹介を書いてください。
+                        </p>
+                      </div>
+                    </div>
+                    <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
+                      <button
+                        type="submit"
+                        class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                      >
+                        保存
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+
+              <!-- 通知設定 -->
+              <div x-show="activeTab === 'notifications'" class="mt-6">
+                <form action="#" method="POST">
+                  <div class="shadow sm:rounded-md sm:overflow-hidden">
+                    <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
+                      <fieldset>
+                        <legend class="text-base font-medium text-gray-900">
+                          メール通知
+                        </legend>
+                        <div class="mt-4 space-y-4">
+                          <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                              <input
+                                id="comments"
+                                name="comments"
+                                type="checkbox"
+                                class="focus:ring-primary h-4 w-4 text-primary border-gray-300 rounded"
+                              />
+                            </div>
+                            <div class="ml-3 text-sm">
+                              <label
+                                for="comments"
+                                class="font-medium text-gray-700"
+                                >コメント</label
+                              >
+                              <p class="text-gray-500">
+                                誰かがあなたの投稿にコメントした時に通知を受け取ります。
+                              </p>
+                            </div>
+                          </div>
+                          <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                              <input
+                                id="mentions"
+                                name="mentions"
+                                type="checkbox"
+                                class="focus:ring-primary h-4 w-4 text-primary border-gray-300 rounded"
+                              />
+                            </div>
+                            <div class="ml-3 text-sm">
+                              <label
+                                for="mentions"
+                                class="font-medium text-gray-700"
+                                >メンション</label
+                              >
+                              <p class="text-gray-500">
+                                誰かがあなたをメンションした時に通知を受け取ります。
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </fieldset>
+                      <fieldset>
+                        <legend class="text-base font-medium text-gray-900">
+                          プッシュ通知
+                        </legend>
+                        <div class="mt-4 space-y-4">
+                          <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                              <input
+                                id="push_everything"
+                                name="push_notifications"
+                                type="radio"
+                                class="focus:ring-primary h-4 w-4 text-primary border-gray-300"
+                              />
+                            </div>
+                            <div class="ml-3 text-sm">
+                              <label
+                                for="push_everything"
+                                class="font-medium text-gray-700"
+                                >すべて</label
+                              >
+                              <p class="text-gray-500">
+                                すべての通知をプッシュ通知で受け取ります。
+                              </p>
+                            </div>
+                          </div>
+                          <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                              <input
+                                id="push_email"
+                                name="push_notifications"
+                                type="radio"
+                                class="focus:ring-primary h-4 w-4 text-primary border-gray-300"
+                              />
+                            </div>
+                            <div class="ml-3 text-sm">
+                              <label
+                                for="push_email"
+                                class="font-medium text-gray-700"
+                                >メールと同じ</label
+                              >
+                              <p class="text-gray-500">
+                                メール通知と同じ設定でプッシュ通知を受け取ります。
+                              </p>
+                            </div>
+                          </div>
+                          <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                              <input
+                                id="push_nothing"
+                                name="push_notifications"
+                                type="radio"
+                                class="focus:ring-primary h-4 w-4 text-primary border-gray-300"
+                              />
+                            </div>
+                            <div class="ml-3 text-sm">
+                              <label
+                                for="push_nothing"
+                                class="font-medium text-gray-700"
+                                >通知なし</label
+                              >
+                              <p class="text-gray-500">
+                                プッシュ通知を受け取りません。
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </fieldset>
+                    </div>
+                    <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
+                      <button
+                        type="submit"
+                        class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                      >
+                        保存
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+
+              <!-- セキュリティ設定 -->
+              <div x-show="activeTab === 'security'" class="mt-6">
+                <form action="#" method="POST">
+                  <div class="shadow sm:rounded-md sm:overflow-hidden">
+                    <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
+                      <div>
+                        <label
+                          for="current_password"
+                          class="block text-sm font-medium text-gray-700"
+                        >
+                          現在のパスワード
+                        </label>
+                        <div class="mt-1">
+                          <input
+                            type="password"
+                            name="current_password"
+                            id="current_password"
+                            class="shadow-sm focus:ring-primary focus:border-primary block w-full sm:text-sm border-gray-300 rounded-md"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label
+                          for="new_password"
+                          class="block text-sm font-medium text-gray-700"
+                        >
+                          新しいパスワード
+                        </label>
+                        <div class="mt-1">
+                          <input
+                            type="password"
+                            name="new_password"
+                            id="new_password"
+                            class="shadow-sm focus:ring-primary focus:border-primary block w-full sm:text-sm border-gray-300 rounded-md"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label
+                          for="confirm_password"
+                          class="block text-sm font-medium text-gray-700"
+                        >
+                          新しいパスワード（確認）
+                        </label>
+                        <div class="mt-1">
+                          <input
+                            type="password"
+                            name="confirm_password"
+                            id="confirm_password"
+                            class="shadow-sm focus:ring-primary focus:border-primary block w-full sm:text-sm border-gray-300 rounded-md"
+                          />
+                        </div>
+                      </div>
+
+                      <div class="flex items-start">
+                        <div class="flex items-center h-5">
+                          <input
+                            id="two_factor"
+                            name="two_factor"
+                            type="checkbox"
+                            class="focus:ring-primary h-4 w-4 text-primary border-gray-300 rounded"
+                          />
+                        </div>
+                        <div class="ml-3 text-sm">
+                          <label
+                            for="two_factor"
+                            class="font-medium text-gray-700"
+                            >2段階認証を有効にする</label
+                          >
+                          <p class="text-gray-500">
+                            アカウントのセキュリティを強化するために2段階認証を使用します。
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
+                      <button
+                        type="submit"
+                        class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                      >
+                        変更を保存
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

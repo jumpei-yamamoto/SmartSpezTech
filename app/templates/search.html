@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="ja" class="h-full bg-gray-100">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>検索結果 - サイト名</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"
+      defer
+    ></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#3B82F6",
+              "primary-dark": "#2563EB",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="h-full" x-data="{ mobileFiltersOpen: false }">
+    <div class="min-h-full">
+      <header class="bg-white shadow">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+          <h1 class="text-3xl font-bold text-gray-900">検索結果</h1>
+        </div>
+      </header>
+      <main>
+        <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+          <!-- 検索バー -->
+          <div class="mb-6">
+            <form action="#" method="GET">
+              <label for="search" class="sr-only">検索</label>
+              <div class="relative rounded-md shadow-sm">
+                <input
+                  type="text"
+                  name="search"
+                  id="search"
+                  class="focus:ring-primary focus:border-primary block w-full pr-10 sm:text-sm border-gray-300 rounded-md"
+                  placeholder="キーワードを入力"
+                />
+                <div
+                  class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+                >
+                  <svg
+                    class="h-5 w-5 text-gray-400"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <div class="bg-white">
+            <div>
+              <!-- モバイル用フィルター -->
+              <div
+                x-show="mobileFiltersOpen"
+                class="fixed inset-0 flex z-40 lg:hidden"
+                role="dialog"
+                aria-modal="true"
+              >
+                <div
+                  class="fixed inset-0 bg-black bg-opacity-25"
+                  aria-hidden="true"
+                  x-show="mobileFiltersOpen"
+                  x-transition:enter="transition-opacity ease-linear duration-300"
+                  x-transition:enter-start="opacity-0"
+                  x-transition:enter-end="opacity-100"
+                  x-transition:leave="transition-opacity ease-linear duration-300"
+                  x-transition:leave-start="opacity-100"
+                  x-transition:leave-end="opacity-0"
+                ></div>
+
+                <div
+                  class="ml-auto relative max-w-xs w-full h-full bg-white shadow-xl py-4 pb-12 flex flex-col overflow-y-auto"
+                  x-show="mobileFiltersOpen"
+                  x-transition:enter="transition ease-in-out duration-300 transform"
+                  x-transition:enter-start="translate-x-full"
+                  x-transition:enter-end="translate-x-0"
+                  x-transition:leave="transition ease-in-out duration-300 transform"
+                  x-transition:leave-start="translate-x-0"
+                  x-transition:leave-end="translate-x-full"
+                >
+                  <div class="px-4 flex items-center justify-between">
+                    <h2 class="text-lg font-medium text-gray-900">
+                      フィルター
+                    </h2>
+                    <button
+                      type="button"
+                      class="-mr-2 w-10 h-10 bg-white p-2 rounded-md flex items-center justify-center text-gray-400"
+                      @click="mobileFiltersOpen = false"
+                    >
+                      <span class="sr-only">フィルターを閉じる</span>
+                      <svg
+                        class="h-6 w-6"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+
+                  <!-- フィルター -->
+                  <form class="mt-4 border-t border-gray-200">
+                    <h3 class="sr-only">カテゴリー</h3>
+                    <ul role="list" class="font-medium text-gray-900 px-2 py-3">
+                      <li>
+                        <a href="#" class="block px-2 py-3">ウェブ開発</a>
+                      </li>
+                      <li>
+                        <a href="#" class="block px-2 py-3">モバイルアプリ</a>
+                      </li>
+                      <li>
+                        <a href="#" class="block px-2 py-3">デザイン</a>
+                      </li>
+                      <li>
+                        <a href="#" class="block px-2 py-3">マーケティング</a>
+                      </li>
+                    </ul>
+
+                    <div class="border-t border-gray-200 px-4 py-6">
+                      <h3 class="-mx-2 -my-3 flow-root">
+                        <button
+                          type="button"
+                          class="px-2 py-3 bg-white w-full flex items-center justify-between text-gray-400 hover:text-gray-500"
+                          aria-controls="filter-section-mobile-0"
+                          aria-expanded="false"
+                        >
+                          <span class="font-medium text-gray-900">日付</span>
+                          <span class="ml-6 flex items-center">
+                            <svg
+                              class="h-5 w-5"
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                              aria-hidden="true"
+                            >
+                              <path
+                                fill-rule="evenodd"
+                                d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                                clip-rule="evenodd"
+                              />
+                            </svg>
+                          </span>
+                        </button>
+                      </h3>
+                      <div class="pt-6" id="filter-section-mobile-0">
+                        <div class="space-y-6">
+                          <div class="flex items-center">
+                            <input
+                              id="filter-mobile-date-0"
+                              name="date[]"
+                              value="new"
+                              type="checkbox"
+                              class="h-4 w-4 border-gray-300 rounded text-primary focus:ring-primary"
+                            />
+                            <label
+                              for="filter-mobile-date-0"
+                              class="ml-3 min-w-0 flex-1 text-gray-500"
+                            >
+                              最新
+                            </label>
+                          </div>
+                          <div class="flex items-center">
+                            <input
+                              id="filter-mobile-date-1"
+                              name="date[]"
+                              value="last-week"
+                              type="checkbox"
+                              class="h-4 w-4 border-gray-300 rounded text-primary focus:ring-primary"
+                            />
+                            <label
+                              for="filter-mobile-date-1"
+                              class="ml-3 min-w-0 flex-1 text-gray-500"
+                            >
+                              先週
+                            </label>
+                          </div>
+                          <div class="flex items-center">
+                            <input
+                              id="filter-mobile-date-2"
+                              name="date[]"
+                              value="last-month"
+                              type="checkbox"
+                              checked
+                              class="h-4 w-4 border-gray-300 rounded text-primary focus:ring-primary"
+                            />
+                            <label
+                              for="filter-mobile-date-2"
+                              class="ml-3 min-w-0 flex-1 text-gray-500"
+                            >
+                              先月
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+
+              <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div
+                  class="relative z-10 flex items-baseline justify-between pt-24 pb-6 border-b border-gray-200"
+                >
+                  <h1
+                    class="text-4xl font-extrabold tracking-tight text-gray-900"
+                  >
+                    検索結果
+                  </h1>
+
+                  <div class="flex items-center">
+                    <div class="relative inline-block text-left">
+                      <div>
+                        <button
+                          type="button"
+                          class="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900"
+                          id="menu-button"
+                          aria-expanded="false"
+                          aria-haspopup="true"
+                        >
+                          並び替え
+                          <svg
+                            class="flex-shrink-0 -mr-1 ml-1 h-5 w-5 text-gray-400 group-hover:text-gray-500"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                            aria-hidden="true"
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                              clip-rule="evenodd"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      class="p-2 -m-2 ml-5 sm:ml-7 text-gray-400 hover:text-gray-500"
+                      @click="mobileFiltersOpen = true"
+                    >
+                      <span class="sr-only">フィルター</span>
+                      <svg
+                        class="w-5 h-5"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <section aria-labelledby="products-heading" class="pt-6 pb-24">
+                  <h2 id="products-heading" class="sr-only">検索結果</h2>
+
+                  <div class="grid grid-cols-1 lg:grid-cols-4 gap-x-8 gap-y-10">
+                    <!-- フィルター -->
+                    <form class="hidden lg:block">
+                      <h3 class="sr-only">カテゴリー</h3>
+                      <ul
+                        role="list"
+                        class="text-sm font-medium text-gray-900 space-y-4 pb-6 border-b border-gray-200"
+                      >
+                        <li>
+                          <a href="#">ウェブ開発</a>
+                        </li>
+                        <li>
+                          <a href="#">モバイルアプリ</a>
+                        </li>
+                        <li>
+                          <a href="#">デザイン</a>
+                        </li>
+                        <li>
+                          <a href="#">マーケティング</a>
+                        </li>
+                      </ul>
+
+                      <div class="border-b border-gray-200 py-6">
+                        <h3 class="-my-3 flow-root">
+                          <button
+                            type="button"
+                            class="py-3 bg-white w-full flex items-center justify-between text-sm text-gray-400 hover:text-gray-500"
+                            aria-controls="filter-section-0"
+                            aria-expanded="false"
+                          >
+                            <span class="font-medium text-gray-900">日付</span>
+                            <span class="ml-6 flex items-center">
+                              <svg
+                                class="h-5 w-5"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                                aria-hidden="true"
+                              >
+                                <path
+                                  fill-rule="evenodd"
+                                  d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                                  clip-rule="evenodd"
+                                />
+                              </svg>
+                            </span>
+                          </button>
+                        </h3>
+                        <div class="pt-6" id="filter-section-0">
+                          <div class="space-y-4">
+                            <div class="flex items-center">
+                              <input
+                                id="filter-date-0"
+                                name="date[]"
+                                value="new"
+                                type="checkbox"
+                                class="h-4 w-4 border-gray-300 rounded text-primary focus:ring-primary"
+                              />
+                              <label
+                                for="filter-date-0"
+                                class="ml-3 text-sm text-gray-600"
+                              >
+                                最新
+                              </label>
+                            </div>
+                            <div class="flex items-center">
+                              <input
+                                id="filter-date-1"
+                                name="date[]"
+                                value="last-week"
+                                type="checkbox"
+                                class="h-4 w-4 border-gray-300 rounded text-primary focus:ring-primary"
+                              />
+                              <label
+                                for="filter-date-1"
+                                class="ml-3 text-sm text-gray-600"
+                              >
+                                先週
+                              </label>
+                            </div>
+                            <div class="flex items-center">
+                              <input
+                                id="filter-date-2"
+                                name="date[]"
+                                value="last-month"
+                                type="checkbox"
+                                checked
+                                class="h-4 w-4 border-gray-300 rounded text-primary focus:ring-primary"
+                              />
+                              <label
+                                for="filter-date-2"
+                                class="ml-3 text-sm text-gray-600"
+                              >
+                                先月
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+
+                    <!-- 検索結果グリッド -->
+                    <div class="lg:col-span-3">
+                      <div class="border-b border-gray-200 pb-5 mb-5">
+                        <h2 class="text-xl font-bold text-gray-900">
+                          "プログラミング" の検索結果
+                        </h2>
+                        <p class="mt-2 text-sm text-gray-700">
+                          142件の結果が見つかりました
+                        </p>
+                      </div>
+                      <div
+                        class="grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-3 xl:gap-x-8"
+                      >
+                        <!-- 検索結果アイテム -->
+                        <div class="group relative">
+                          <div
+                            class="w-full min-h-80 bg-gray-200 aspect-w-1 aspect-h-1 rounded-md overflow-hidden group-hover:opacity-75 lg:h-80 lg:aspect-none"
+                          >
+                            <img
+                              src="/placeholder.svg?height=320&width=320"
+                              alt="プログラミング入門コース"
+                              class="w-full h-full object-center object-cover lg:w-full lg:h-full"
+                            />
+                          </div>
+                          <div class="mt-4 flex justify-between">
+                            <div>
+                              <h3 class="text-sm text-gray-700">
+                                <a href="#">
+                                  <span
+                                    aria-hidden="true"
+                                    class="absolute inset-0"
+                                  ></span>
+                                  プログラミング入門コース
+                                </a>
+                              </h3>
+                              <p class="mt-1 text-sm text-gray-500">
+                                初心者向け
+                              </p>
+                            </div>
+                            <p class="text-sm font-medium text-gray-900">
+                              ¥9,800
+                            </p>
+                          </div>
+                        </div>
+
+                        <div class="group relative">
+                          <div
+                            class="w-full min-h-80 bg-gray-200 aspect-w-1 aspect-h-1 rounded-md overflow-hidden group-hover:opacity-75 lg:h-80 lg:aspect-none"
+                          >
+                            <img
+                              src="/placeholder.svg?height=320&width=320"
+                              alt="Webアプリケーション開発実践"
+                              class="w-full h-full object-center object-cover lg:w-full lg:h-full"
+                            />
+                          </div>
+                          <div class="mt-4 flex justify-between">
+                            <div>
+                              <h3 class="text-sm text-gray-700">
+                                <a href="#">
+                                  <span
+                                    aria-hidden="true"
+                                    class="absolute inset-0"
+                                  ></span>
+                                  Webアプリケーション開発実践
+                                </a>
+                              </h3>
+                              <p class="mt-1 text-sm text-gray-500">
+                                中級者向け
+                              </p>
+                            </div>
+                            <p class="text-sm font-medium text-gray-900">
+                              ¥15,000
+                            </p>
+                          </div>
+                        </div>
+
+                        <div class="group relative">
+                          <div
+                            class="w-full min-h-80 bg-gray-200 aspect-w-1 aspect-h-1 rounded-md overflow-hidden group-hover:opacity-75 lg:h-80 lg:aspect-none"
+                          >
+                            <img
+                              src="/placeholder.svg?height=320&width=320"
+                              alt="AI・機械学習プログラミング"
+                              class="w-full h-full object-center object-cover lg:w-full lg:h-full"
+                            />
+                          </div>
+                          <div class="mt-4 flex justify-between">
+                            <div>
+                              <h3 class="text-sm text-gray-700">
+                                <a href="#">
+                                  <span
+                                    aria-hidden="true"
+                                    class="absolute inset-0"
+                                  ></span>
+                                  AI・機械学習プログラミング
+                                </a>
+                              </h3>
+                              <p class="mt-1 text-sm text-gray-500">
+                                上級者向け
+                              </p>
+                            </div>
+                            <p class="text-sm font-medium text-gray-900">
+                              ¥25,000
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- ページネーション -->
+                      <div
+                        class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 mt-6"
+                      >
+                        <div class="flex-1 flex justify-between sm:hidden">
+                          <a
+                            href="#"
+                            class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                          >
+                            前へ
+                          </a>
+                          <a
+                            href="#"
+                            class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                          >
+                            次へ
+                          </a>
+                        </div>
+                        <div
+                          class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between"
+                        >
+                          <div>
+                            <p class="text-sm text-gray-700">
+                              <span class="font-medium">1</span> から
+                              <span class="font-medium">10</span> を表示中 (全
+                              <span class="font-medium">142</span> 件)
+                            </p>
+                          </div>
+                          <div>
+                            <nav
+                              class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+                              aria-label="Pagination"
+                            >
+                              <a
+                                href="#"
+                                class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                              >
+                                <span class="sr-only">前へ</span>
+                                <svg
+                                  class="h-5 w-5"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 20 20"
+                                  fill="currentColor"
+                                  aria-hidden="true"
+                                >
+                                  <path
+                                    fill-rule="evenodd"
+                                    d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                    clip-rule="evenodd"
+                                  />
+                                </svg>
+                              </a>
+                              <a
+                                href="#"
+                                aria-current="page"
+                                class="z-10 bg-primary border-primary text-white relative inline-flex items-center px-4 py-2 border text-sm font-medium"
+                              >
+                                1
+                              </a>
+                              <a
+                                href="#"
+                                class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium"
+                              >
+                                2
+                              </a>
+                              <a
+                                href="#"
+                                class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 hidden md:inline-flex relative items-center px-4 py-2 border text-sm font-medium"
+                              >
+                                3
+                              </a>
+                              <span
+                                class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700"
+                              >
+                                ...
+                              </span>
+                              <a
+                                href="#"
+                                class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 hidden md:inline-flex relative items-center px-4 py-2 border text-sm font-medium"
+                              >
+                                8
+                              </a>
+                              <a
+                                href="#"
+                                class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium"
+                              >
+                                9
+                              </a>
+                              <a
+                                href="#"
+                                class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium"
+                              >
+                                10
+                              </a>
+                              <a
+                                href="#"
+                                class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                              >
+                                <span class="sr-only">次へ</span>
+                                <svg
+                                  class="h-5 w-5"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 20 20"
+                                  fill="currentColor"
+                                  aria-hidden="true"
+                                >
+                                  <path
+                                    fill-rule="evenodd"
+                                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                    clip-rule="evenodd"
+                                  />
+                                </svg>
+                              </a>
+                            </nav>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </main>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ja" class="h-full bg-gray-100">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>リストテンプレート</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"
+      defer
+    ></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#3B82F6",
+              "primary-dark": "#2563EB",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="h-full">
+    <div class="min-h-full">
+      <header class="bg-white shadow">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+          <h1 class="text-3xl font-bold text-gray-900">リストテンプレート</h1>
+        </div>
+      </header>
+      <main>
+        <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+          <!-- 順序なしリスト -->
+          <div class="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
+            <div class="px-4 py-5 sm:px-6">
+              <h2 class="text-lg leading-6 font-medium text-gray-900">
+                順序なしリスト
+              </h2>
+            </div>
+            <div class="border-t border-gray-200">
+              <ul class="divide-y divide-gray-200">
+                <li class="px-4 py-4 sm:px-6">
+                  <div class="flex items-center">
+                    <svg
+                      class="h-5 w-5 text-gray-400 mr-2"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                    <span class="text-gray-700">リスト項目 1</span>
+                  </div>
+                </li>
+                <li class="px-4 py-4 sm:px-6">
+                  <div class="flex items-center">
+                    <svg
+                      class="h-5 w-5 text-gray-400 mr-2"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                    <span class="text-gray-700">リスト項目 2</span>
+                  </div>
+                </li>
+                <li class="px-4 py-4 sm:px-6">
+                  <div class="flex items-center">
+                    <svg
+                      class="h-5 w-5 text-gray-400 mr-2"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                    <span class="text-gray-700">リスト項目 3</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- 順序付きリスト -->
+          <div class="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
+            <div class="px-4 py-5 sm:px-6">
+              <h2 class="text-lg leading-6 font-medium text-gray-900">
+                順序付きリスト
+              </h2>
+            </div>
+            <div class="border-t border-gray-200">
+              <ol class="divide-y divide-gray-200">
+                <li class="px-4 py-4 sm:px-6">
+                  <div class="flex items-center">
+                    <span
+                      class="bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center mr-2"
+                      >1</span
+                    >
+                    <span class="text-gray-700">最初のステップ</span>
+                  </div>
+                </li>
+                <li class="px-4 py-4 sm:px-6">
+                  <div class="flex items-center">
+                    <span
+                      class="bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center mr-2"
+                      >2</span
+                    >
+                    <span class="text-gray-700">次のステップ</span>
+                  </div>
+                </li>
+                <li class="px-4 py-4 sm:px-6">
+                  <div class="flex items-center">
+                    <span
+                      class="bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center mr-2"
+                      >3</span
+                    >
+                    <span class="text-gray-700">最後のステップ</span>
+                  </div>
+                </li>
+              </ol>
+            </div>
+          </div>
+
+          <!-- 説明リスト -->
+          <div class="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
+            <div class="px-4 py-5 sm:px-6">
+              <h2 class="text-lg leading-6 font-medium text-gray-900">
+                説明リスト
+              </h2>
+            </div>
+            <div class="border-t border-gray-200">
+              <dl>
+                <div
+                  class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6"
+                >
+                  <dt class="text-sm font-medium text-gray-500">名前</dt>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    山田 太郎
+                  </dd>
+                </div>
+                <div
+                  class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6"
+                >
+                  <dt class="text-sm font-medium text-gray-500">
+                    メールアドレス
+                  </dt>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    yamada@example.com
+                  </dd>
+                </div>
+                <div
+                  class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6"
+                >
+                  <dt class="text-sm font-medium text-gray-500">職業</dt>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    ソフトウェアエンジニア
+                  </dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+
+          <!-- 折りたたみ可能なリスト -->
+          <div class="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
+            <div class="px-4 py-5 sm:px-6">
+              <h2 class="text-lg leading-6 font-medium text-gray-900">
+                折りたたみ可能なリスト
+              </h2>
+            </div>
+            <div class="border-t border-gray-200">
+              <ul class="divide-y divide-gray-200" x-data="{ selected: null }">
+                <li class="px-4 py-4 sm:px-6">
+                  <button
+                    @click="selected !== 1 ? selected = 1 : selected = null"
+                    class="flex justify-between items-center w-full"
+                  >
+                    <span class="text-gray-700">セクション 1</span>
+                    <svg
+                      class="h-5 w-5 text-gray-500"
+                      :class="{'transform rotate-180': selected == 1}"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                  </button>
+                  <div x-show="selected == 1" class="mt-2">
+                    <p class="text-gray-600">
+                      セクション 1 の詳細な内容がここに表示されます。
+                    </p>
+                  </div>
+                </li>
+                <li class="px-4 py-4 sm:px-6">
+                  <button
+                    @click="selected !== 2 ? selected = 2 : selected = null"
+                    class="flex justify-between items-center w-full"
+                  >
+                    <span class="text-gray-700">セクション 2</span>
+                    <svg
+                      class="h-5 w-5 text-gray-500"
+                      :class="{'transform rotate-180': selected == 2}"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                  </button>
+                  <div x-show="selected == 2" class="mt-2">
+                    <p class="text-gray-600">
+                      セクション 2 の詳細な内容がここに表示されます。
+                    </p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- ページネーション -->
+          <nav
+            class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6"
+            aria-label="Pagination"
+          >
+            <div class="hidden sm:block">
+              <p class="text-sm text-gray-700">
+                全 <span class="font-medium">20</span> 件中
+                <span class="font-medium">1</span> から
+                <span class="font-medium">10</span> 件を表示
+              </p>
+            </div>
+            <div class="flex-1 flex justify-between sm:justify-end">
+              <a
+                href="#"
+                class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+              >
+                前へ
+              </a>
+              <a
+                href="#"
+                class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+              >
+                次へ
+              </a>
+            </div>
+          </nav>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
