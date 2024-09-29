@@ -16,22 +16,22 @@ services:
       - ENVIRONMENT=development
     command: uvicorn app.main:app --host 0.0.0.0 --port 80
     depends_on:
-      - db:
-        condition: service_healthy
+      - db
     networks:
       - app-network
+
   db:
     image: postgres:13
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: mydatabase
+      RDS_POSTGRES_USER: postgres
+      RDS_POSTGRES_PASSWORD: password
+      RDS_POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      retries: 5
+    networks:
+      - app-network
   pgadmin:
     image: dpage/pgadmin4
     environment:
