@@ -1,0 +1,50 @@
+<!-- ファイル名: CustomSystem_VirtualReality.html -->
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>バーチャルリアリティシステム</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.jsライブラリ -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  </head>
+  <body class="bg-black">
+    <nav class="bg-purple-800 p-4">
+      <h1 class="text-white text-2xl">バーチャルリアリティシステム</h1>
+    </nav>
+    <div class="container mx-auto p-4">
+      <!-- VRコンテンツ表示エリア -->
+      <div id="vr-scene" class="w-full h-screen"></div>
+    </div>
+    <script>
+      // Three.jsを用いた3Dシーンの初期化
+      var scene = new THREE.Scene();
+      var camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+      );
+      var renderer = new THREE.WebGLRenderer();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.getElementById("vr-scene").appendChild(renderer.domElement);
+
+      // 簡単な立方体の追加
+      var geometry = new THREE.BoxGeometry();
+      var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+      var cube = new THREE.Mesh(geometry, material);
+      scene.add(cube);
+
+      camera.position.z = 5;
+
+      // アニメーションループ
+      function animate() {
+        requestAnimationFrame(animate);
+        cube.rotation.x += 0.01;
+        cube.rotation.y += 0.01;
+        renderer.render(scene, camera);
+      }
+      animate();
+    </script>
+  </body>
+</html>

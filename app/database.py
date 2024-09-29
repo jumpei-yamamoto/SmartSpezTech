@@ -3,6 +3,8 @@ import logging
 from sqlalchemy import create_engine, inspect
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.schema import DropTable
+from sqlalchemy import text
 
 logger = logging.getLogger(__name__)
 
@@ -55,6 +57,21 @@ def create_tables():
         logger.info("Table creation process completed.")
     except Exception as e:
         logger.error(f"An error occurred while creating tables: {str(e)}")
+
+# 全てのテーブルを削除する関数
+def drop_all_tables():
+    inspector = inspect(engine)
+    
+    # 外部キー制約を無視してテーブルを削除するためのコンテキストマネージャー
+    with engine.connect() as connection:
+        connection.execute(text("SET FOREIGN_KEY_CHECKS=0"))
+        
+        for table_name in inspector.get_table_names():
+            connection.execute(text(f"DROP TABLE IF EXISTS {table_name}"))
+        
+        connection.execute(text("SET FOREIGN_KEY_CHECKS=1"))
+    
+    logger.info("全てのテーブルが削除されました。")
 
 # データベースセッション取得関数
 def get_db():

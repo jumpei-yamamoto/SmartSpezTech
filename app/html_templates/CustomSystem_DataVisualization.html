@@ -1,0 +1,59 @@
+<!-- ファイル名: CustomSystem_DataVisualization.html -->
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>データビジュアライゼーションシステム</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- データビジュアライゼーション用ライブラリ（例：Chart.js） -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body class="bg-gray-100">
+    <nav class="bg-blue-600 p-4">
+      <h1 class="text-white text-2xl">データビジュアライゼーションシステム</h1>
+    </nav>
+    <div class="container mx-auto p-4">
+      <!-- ダッシュボード -->
+      <div class="grid grid-cols-2 gap-4">
+        <div class="bg-white p-4 rounded shadow">
+          <canvas id="chart1"></canvas>
+        </div>
+        <div class="bg-white p-4 rounded shadow">
+          <canvas id="chart2"></canvas>
+        </div>
+      </div>
+    </div>
+    <script>
+      // グラフの初期化コード（例）
+      var ctx1 = document.getElementById("chart1").getContext("2d");
+      var chart1 = new Chart(ctx1, {
+        type: "bar",
+        data: {
+          labels: ["1月", "2月", "3月", "4月", "5月"],
+          datasets: [
+            {
+              label: "売上",
+              data: [12, 19, 3, 5, 2],
+              backgroundColor: "rgba(54, 162, 235, 0.5)",
+            },
+          ],
+        },
+      });
+      var ctx2 = document.getElementById("chart2").getContext("2d");
+      var chart2 = new Chart(ctx2, {
+        type: "line",
+        data: {
+          labels: ["1月", "2月", "3月", "4月", "5月"],
+          datasets: [
+            {
+              label: "アクセス数",
+              data: [30, 50, 40, 60, 70],
+              borderColor: "rgba(255, 99, 132, 1)",
+              fill: false,
+            },
+          ],
+        },
+      });
+    </script>
+  </body>
+</html>

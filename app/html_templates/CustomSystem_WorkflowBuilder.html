@@ -1,0 +1,45 @@
+<!-- ファイル名: CustomSystem_WorkflowBuilder.html -->
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ワークフロー構築システム</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- ドラッグ＆ドロップ用ライブラリ（例：interact.js） -->
+    <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+  </head>
+  <body class="bg-white">
+    <nav class="bg-green-600 p-4">
+      <h1 class="text-white text-2xl">ワークフロー構築システム</h1>
+    </nav>
+    <div class="container mx-auto p-4">
+      <!-- ワークフロービルダーエリア -->
+      <div
+        class="border-2 border-dashed border-gray-300 h-64 relative"
+        id="workflow-area"
+      >
+        <!-- ドラッグ可能な要素 -->
+        <div
+          class="bg-blue-500 text-white p-2 rounded absolute"
+          style="top: 10px; left: 10px"
+          id="task1"
+        >
+          タスク1
+        </div>
+        <!-- 他のタスク -->
+      </div>
+      <!-- ツールボックス -->
+      <div class="mt-4">
+        <button class="bg-blue-500 text-white py-2 px-4 rounded">
+          新しいタスクを追加
+        </button>
+      </div>
+    </div>
+    <script>
+      // ドラッグ＆ドロップの初期化コード
+      interact(".draggable").draggable({
+        // オプション設定
+      });
+    </script>
+  </body>
+</html>

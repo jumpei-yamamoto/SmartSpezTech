@@ -1,0 +1,38 @@
+<!-- ファイル名: CustomerManagement_CustomFields.html -->
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>カスタムフィールド顧客管理システム</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-white">
+    <nav class="bg-gray-700 p-4">
+      <h1 class="text-white text-2xl">カスタムフィールド顧客管理システム</h1>
+    </nav>
+    <div class="container mx-auto p-4">
+      <!-- カスタムフィールド設定ボタン -->
+      <div class="mb-4">
+        <button class="bg-blue-500 text-white py-2 px-4 rounded">
+          カスタムフィールドを追加
+        </button>
+      </div>
+      <!-- 顧客一覧（カスタムフィールドを含む） -->
+      <table class="min-w-full bg-white">
+        <thead>
+          <tr>
+            <!-- 基本項目 -->
+            <th class="py-2 px-4 border-b">顧客ID</th>
+            <th class="py-2 px-4 border-b">名前</th>
+            <!-- カスタム項目 -->
+            <th class="py-2 px-4 border-b">カスタム項目1</th>
+            <!-- 他のカスタム項目 -->
+          </tr>
+        </thead>
+        <tbody>
+          <!-- 顧客データ -->
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

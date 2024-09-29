@@ -1,0 +1,35 @@
+<!-- ファイル名: CustomSystem_Chatbot.html -->
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>チャットボットシステム</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- チャットボット用ライブラリ（例：BotUI） -->
+    <link rel="stylesheet" href="https://unpkg.com/botui/build/botui.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/botui/build/botui-theme-default.css"
+    />
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/botui/build/botui.min.js"></script>
+  </head>
+  <body class="bg-white">
+    <nav class="bg-teal-700 p-4">
+      <h1 class="text-white text-2xl">チャットボットシステム</h1>
+    </nav>
+    <div class="container mx-auto p-4">
+      <!-- チャットボットエリア -->
+      <div id="chat-app">
+        <bot-ui></bot-ui>
+      </div>
+    </div>
+    <script>
+      var botui = new BotUI("chat-app");
+      // チャットボットの対話フロー
+      botui.message.add({
+        content: "こんにちは！ご用件をお聞かせください。",
+      });
+    </script>
+  </body>
+</html>

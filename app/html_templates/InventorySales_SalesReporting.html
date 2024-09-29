@@ -1,0 +1,33 @@
+<!-- ファイル名: InventorySales_SalesReporting.html -->
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>販売レポートシステム</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-50">
+    <nav class="bg-blue-600 p-4">
+      <h1 class="text-white text-2xl">販売レポートシステム</h1>
+    </nav>
+    <div class="container mx-auto p-4">
+      <!-- レポート選択 -->
+      <div class="mb-4">
+        <select class="p-2 border border-gray-300 rounded">
+          <option value="daily">日次レポート</option>
+          <option value="monthly">月次レポート</option>
+          <option value="yearly">年次レポート</option>
+        </select>
+        <button class="ml-2 bg-blue-500 text-white py-2 px-4 rounded">
+          表示
+        </button>
+      </div>
+      <!-- レポート表示 -->
+      <div class="bg-white p-4 rounded shadow">
+        <h2 class="text-lg font-bold mb-2">売上レポート</h2>
+        <!-- レポート内容 -->
+        <p>レポートデータがここに表示されます。</p>
+      </div>
+    </div>
+  </body>
+</html>

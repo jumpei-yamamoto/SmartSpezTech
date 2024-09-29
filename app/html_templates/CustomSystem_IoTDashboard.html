@@ -1,0 +1,38 @@
+<!-- ファイル名: CustomSystem_IoTDashboard.html -->
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>IoTダッシュボード</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- リアルタイム通信用ライブラリ（例：Socket.io） -->
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+  </head>
+  <body class="bg-gray-100">
+    <nav class="bg-gray-800 p-4">
+      <h1 class="text-white text-2xl">IoTダッシュボード</h1>
+    </nav>
+    <div class="container mx-auto p-4">
+      <!-- デバイスステータス一覧 -->
+      <div class="grid grid-cols-3 gap-4">
+        <div class="bg-white p-4 rounded shadow">
+          <h2 class="text-lg font-bold">デバイス1</h2>
+          <p class="text-gray-700">
+            ステータス: <span id="device1-status">接続中</span>
+          </p>
+        </div>
+        <!-- 他のデバイス -->
+      </div>
+      <!-- データグラフ -->
+      <div class="mt-8">
+        <canvas id="iot-chart"></canvas>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      // ソケット接続の初期化
+      var socket = io("https://your-iot-server.com");
+      // データ受信とグラフ更新のコード
+    </script>
+  </body>
+</html>
