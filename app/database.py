@@ -62,14 +62,16 @@ def create_tables():
 def drop_all_tables():
     inspector = inspect(engine)
     
-    # 外部キー制約を無視してテーブルを削除するためのコンテキストマネージャー
-    with engine.connect() as connection:
-        connection.execute(text("SET FOREIGN_KEY_CHECKS=0"))
+    with engine.begin() as connection:
+        # 外部キー制約を無効化
+        connection.execute(text("SET session_replication_role = 'replica';"))
         
+        # 全てのテーブルを削除
         for table_name in inspector.get_table_names():
-            connection.execute(text(f"DROP TABLE IF EXISTS {table_name}"))
+            connection.execute(text(f'DROP TABLE IF EXISTS "{table_name}" CASCADE'))
         
-        connection.execute(text("SET FOREIGN_KEY_CHECKS=1"))
+        # 外部キー制約を再度有効化
+        connection.execute(text("SET session_replication_role = 'origin';"))
     
     logger.info("全てのテーブルが削除されました。")
 
