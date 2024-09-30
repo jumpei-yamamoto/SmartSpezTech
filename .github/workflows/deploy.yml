@@ -52,8 +52,7 @@ jobs:
           eb setenv OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" \
                     RDS_POSTGRES_USER="${{ secrets.RDS_POSTGRES_USER }}" \
                     RDS_POSTGRES_PASSWORD="${{ secrets.RDS_POSTGRES_PASSWORD }}" \
-                    RDS_POSTGRES_DB="${{ secrets.RDS_POSTGRES_DB }}" \
-                    DATABASE_URL="postgresql://${{ secrets.RDS_POSTGRES_USER }}:${{ secrets.RDS_POSTGRES_PASSWORD }}@db:5432/${{ secrets.RDS_POSTGRES_DB }}" \
+                    DATABASE_URL="${{ secrets.DATABASE_URL }}" \
                     ENVIRONMENT="production" || { echo 'setenv failed'; exit 1; }
 
       - name: Wait for environment variables to be applied
