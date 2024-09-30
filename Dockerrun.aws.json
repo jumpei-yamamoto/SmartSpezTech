@@ -1,0 +1,50 @@
+
+- プロジェクトのルートディレクトリに`Dockerrun.aws.json`ファイルを作成し、以下の内容を追加します：
+
+```json:Dockerrun.aws.json
+{
+  "AWSEBDockerrunVersion": "2",
+  "containerDefinitions": [
+    {
+      "name": "fastapi",
+      "image": "smartspeztech:tag",
+      "essential": true,
+      "memory": 512,
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 80
+        }
+      ],
+      "links": ["db"]
+    },
+    {
+      "name": "db",
+      "image": "postgres:13",
+      "essential": true,
+      "memory": 256,
+      "portMappings": [
+        {
+          "hostPort": 5432,
+          "containerPort": 5432
+        }
+      ],
+      "environment": [
+        {
+          "name": "POSTGRES_USER",
+          "value": "${RDS_POSTGRES_USER}"
+        },
+        {
+          "name": "POSTGRES_PASSWORD",
+          "value": "${RDS_POSTGRES_PASSWORD}"
+        },
+        {
+          "name": "POSTGRES_DB",
+          "value": "${RDS_POSTGRES_DB}"
+        }
+      ]
+    }
+  ]
+}
+```
+

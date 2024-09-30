@@ -12,37 +12,37 @@ services:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
       - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - DATABASE_URL=postgresql://postgres:password@db:5432/mydatabase
-      - ENVIRONMENT=development
+      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:password@db:5432/mydatabase}
+      - ENVIRONMENT=${ENVIRONMENT:-development}
     command: uvicorn app.main:app --host 0.0.0.0 --port 80
     depends_on:
       - db
     networks:
       - app-network
 
-  # db:
-  #   image: postgres:13
-  #   environment:
-  #     RDS_POSTGRES_USER: postgres
-  #     RDS_POSTGRES_PASSWORD: password
-  #     RDS_POSTGRES_DB: mydatabase
-  #   ports:
-  #     - "5432:5432"
-  #   volumes:
-  #     - postgres_data:/var/lib/postgresql/data
-  #   networks:
-  #     - app-network
-  # pgadmin:
-  #   image: dpage/pgadmin4
-  #   environment:
-  #     PGADMIN_DEFAULT_EMAIL: admin@admin.com
-  #     PGADMIN_DEFAULT_PASSWORD: admin
-  #   ports:
-  #     - "8080:80"
-  #   depends_on:
-  #     - db
-  #   networks:
-  #     - app-network
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: ${RDS_POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${RDS_POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: ${RDS_POSTGRES_DB:-mydatabase}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    networks:
+      - app-network
 
 networks:
   app-network:
