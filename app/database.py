@@ -85,4 +85,10 @@ def get_db():
         db.close()
 
 # アプリケーション起動時にこの関数を呼び出す
-create_tables()
+def on_startup():
+    logger.info("Application startup started.")
+    # 全てのテーブルを削除
+    drop_all_tables()
+    
+    # テーブル作成
+    create_tables()
