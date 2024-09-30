@@ -12,7 +12,7 @@ services:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
       - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - DATABASE_URL=${DATABASE_URL}
+      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:sstposroot@database-1.c5kakq0ag066.ap-northeast-3.rds.amazonaws.com:5432/mydatabase}
       # - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:password@db:5432/mydatabase}
       - ENVIRONMENT=${ENVIRONMENT:-development}
     command: uvicorn app.main:app --host 0.0.0.0 --port 80
