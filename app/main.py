@@ -61,15 +61,18 @@ async def root():
 
 @app.on_event("startup")
 async def startup_event():
-    logger.info("Application startup　started")
-    on_startup()
+    try:
+        logger.info("Application startup started")
+        on_startup()
 
-    # データベース名を取得してログに出力
-    from sqlalchemy.orm import Session
-    with Session(engine) as session:
-        result = session.execute(text("SELECT current_database();"))
-        database_name = result.scalar()
-        logger.info(f"現在接続しているデータベース: {database_name}")
+        # データベース名を取得してログに出力
+        from sqlalchemy.orm import Session
+        with Session(engine) as session:
+            result = session.execute(text("SELECT current_database();"))
+            database_name = result.scalar()
+            logger.info(f"現在接続しているデータベース: {database_name}")
+    except Exception as e:
+        logger.error(f"Startup event failed: {e}")
 
 if __name__ == "__main__":
     logger.info("Main block executed")
