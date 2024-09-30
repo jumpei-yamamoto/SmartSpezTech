@@ -12,6 +12,7 @@ from sqlalchemy import text
 # .envファイルを読み込む
 load_dotenv()
 
+
 # ロギングの設定を修正
 logging.basicConfig(level=logging.INFO, encoding='utf-8')
 logger = logging.getLogger(__name__)
@@ -60,6 +61,7 @@ async def root():
 
 @app.on_event("startup")
 async def startup_event():
+    logger.info("Application startup　started")
     # 全てのテーブルを削除
     drop_all_tables()
 

@@ -60,6 +60,7 @@ def create_tables():
 
 # 全てのテーブルを削除する関数
 def drop_all_tables():
+    logger.info("Starting to delete all tables.")
     inspector = inspect(engine)
     
     with engine.begin() as connection:
