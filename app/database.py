@@ -16,9 +16,12 @@ logger.info(f"Current ENVIRONMENT: {ENVIRONMENT}")
 
 # 環境に応じてDATABASE_URLを設定
 if ENVIRONMENT == "production":
-    db_user = os.getenv("RDS_POSTGRES_USER")
-    db_password = os.getenv("RDS_POSTGRES_PASSWORD")
-    db_host = os.getenv("RDS_ENDPOINT")
+    # db_user = os.getenv("RDS_POSTGRES_USER")
+    db_user = "postgres"
+    # db_password = os.getenv("RDS_POSTGRES_PASSWORD")
+    db_password = "sstposroot"
+    # db_host = os.getenv("RDS_ENDPOINT")
+    db_host = "database-1.c5kakq0ag066.ap-northeast-3.rds.amazonaws.com"
     db_name = "mydatabase"
     DATABASE_URL = f"postgresql://{db_user}:{db_password}@{db_host}:5432/{db_name}"
     logger.info(f"Using production database: {db_host}")
@@ -88,7 +91,9 @@ def get_db():
 def on_startup():
     logger.info("Application startup started.")
     # 全てのテーブルを削除
+    logger.info("Deleting all tables.")
     drop_all_tables()
     
     # テーブル作成
+    logger.info("Creating tables.")
     create_tables()

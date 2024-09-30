@@ -70,7 +70,7 @@ async def startup_event():
         with Session(engine) as session:
             result = session.execute(text("SELECT current_database();"))
             database_name = result.scalar()
-            logger.info(f"現在接続しているデータベース: {database_name}")
+            logger.info(f"Currently connected database: {database_name}")
     except Exception as e:
         logger.error(f"Startup event failed: {e}")
 
