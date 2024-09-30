@@ -34,7 +34,7 @@ origins = [
     "http://smartspeztech.eba-kam3e43r.ap-northeast-3.elasticbeanstalk.com",  # Elastic Beanstalkのドメイン
     "https://smartspeztech.com",  # 新しいカスタムドメイン
     "https://www.smartspeztech.com",  # www付きのカスタムドメイン（必要な場合）
-    "http://smartspeztech.eba-kam3e43r.ap-northeast-3.elasticbeanstalk.com",  # S3のドメイン
+    "http://smartspeztech.s3-website.ap-northeast-3.amazonaws.com",  # S3のドメイン
 ]
 
 app.add_middleware(
