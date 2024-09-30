@@ -33,7 +33,8 @@ origins = [
     "http://localhost:3000",  # ローカル開発用
     "http://smartspeztech.eba-kam3e43r.ap-northeast-3.elasticbeanstalk.com",  # Elastic Beanstalkのドメイン
     "https://smartspeztech.com",  # 新しいカスタムドメイン
-    "https://www.smartspeztech.com"  # www付きのカスタムドメイン（必要な場合）
+    "https://www.smartspeztech.com",  # www付きのカスタムドメイン（必要な場合）
+    "http://smartspeztech.eba-kam3e43r.ap-northeast-3.elasticbeanstalk.com",  # S3のドメイン
 ]
 
 app.add_middleware(
