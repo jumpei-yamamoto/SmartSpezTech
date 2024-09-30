@@ -56,7 +56,8 @@ def get_inquiry(inquiry_id: int, db: Session = Depends(get_db)):
         if not estimate:
             raise HTTPException(status_code=404, detail="Inquiry not found")
         
-        screens = db.query(Screen).filter(Screen.estimate_id == estimate.id).all()
+        # 最新の screens のみを取得
+        screens = db.query(Screen).filter(Screen.estimate_id == estimate.id).order_by(Screen.title, Screen.id.desc()).distinct(Screen.title).all()
         
         screen_responses = [
             ScreenResponse(
