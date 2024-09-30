@@ -20,18 +20,18 @@ services:
     networks:
       - app-network
 
-  db:
-    image: postgres:13
-    environment:
-      RDS_POSTGRES_USER: postgres
-      RDS_POSTGRES_PASSWORD: password
-      RDS_POSTGRES_DB: mydatabase
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - app-network
+  # db:
+  #   image: postgres:13
+  #   environment:
+  #     RDS_POSTGRES_USER: postgres
+  #     RDS_POSTGRES_PASSWORD: password
+  #     RDS_POSTGRES_DB: mydatabase
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   networks:
+  #     - app-network
   pgadmin:
     image: dpage/pgadmin4
     environment:
