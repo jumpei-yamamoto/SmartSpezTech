@@ -23,6 +23,7 @@ def load_templates():
 
 # テンプレートを選択する関数を改善
 async def select_template(templates, screen_info):
+    return templates.get("default.html", "")
     keyword = await extract_keywords(screen_info)
     
     for filename, content in templates.items():
