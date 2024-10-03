@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - feature/phase3
   repository_dispatch:
     types: [deploy_backend]
 
