@@ -18,7 +18,7 @@ class Estimate(Base):
     name = Column(String, index=True)
     email = Column(String, index=True)
     inquiry = Column(Text)
-    answers = Column(Text)
+    # answers = Column(Text)
     status = Column(Integer, default=EstimateStatus.PENDING, nullable=False)  # Integer 型を使用
 
     # 画面情報との関連付け
@@ -35,7 +35,7 @@ class Screen(Base):
     id = Column(Integer, primary_key=True, index=True)
     estimate_id = Column(Integer, ForeignKey('estimate_data.id'))
     title = Column(String)
-    catchphrase = Column(String)
+    text = Column(String)
     description = Column(Text)
     preview = Column(Text)
 

@@ -10,10 +10,10 @@ class SimulationResult(BaseModel):
 
 class SimulationData(BaseModel):
     title: str
-    catchphrase: str
-    description: str
-    preview: str  # Changed from List[str] to str
-    answers: Dict[str, Any]
+    text: str
+    screen_description: str
+    html: str  # Changed from List[str] to str
+    # answers: Dict[str, Any]
 
 class SimulationDataList(BaseModel):
     simulationData: List[SimulationData]
@@ -22,7 +22,7 @@ class InquiryRequest(BaseModel):
     name: str
     email: str
     message: str
-    simulationData: List[SimulationData]  # Changed from SimulationDataList to List[SimulationData]
+    simulationData: SimulationData  # Changed from SimulationDataList to List[SimulationData]
 
 class EstimateRequest(BaseModel):
     answers: Dict[str, Any]
@@ -31,4 +31,3 @@ class EstimateRequest(BaseModel):
 class PreviewRequest(BaseModel):
     answers: Dict[str, Any]
 
-# 他のスキーマ定義...

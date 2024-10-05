@@ -25,7 +25,7 @@ def get_inquiries(db: Session = Depends(get_db)):
                 ScreenResponse(
                     id=screen.id,
                     title=screen.title,
-                    catchphrase=screen.catchphrase or "",  # None を空文字列に変換
+                    text=screen.text or "",  # None を空文字列に変換
                     description=screen.description or "",  # None を空文字列に変換
                     preview=screen.preview or ""  # preview も同様に処理
                 ) for screen in screens
@@ -37,7 +37,7 @@ def get_inquiries(db: Session = Depends(get_db)):
                     name=estimate.name,
                     email=estimate.email,
                     inquiry=estimate.inquiry,
-                    answers=estimate.answers or "",  # None を空文字列に変換
+                    # answers=estimate.answers or "",  # None を空文字列に変換
                     status=estimate.status,
                     screens=screen_responses
                 )
@@ -63,7 +63,7 @@ def get_inquiry(inquiry_id: int, db: Session = Depends(get_db)):
             ScreenResponse(
                 id=screen.id,
                 title=screen.title,
-                catchphrase=screen.catchphrase or "",
+                text=screen.text or "",
                 description=screen.description or "",
                 preview=screen.preview or ""
             ) for screen in screens
@@ -74,7 +74,7 @@ def get_inquiry(inquiry_id: int, db: Session = Depends(get_db)):
             name=estimate.name,
             email=estimate.email,
             inquiry=estimate.inquiry,
-            answers=estimate.answers or "",
+            # answers=estimate.answers or "",
             status=estimate.status,
             screens=screen_responses
         )

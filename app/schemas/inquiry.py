@@ -4,7 +4,7 @@ from typing import List, Optional
 class ScreenResponse(BaseModel):
     id: int
     title: str
-    catchphrase: Optional[str] = None
+    text: Optional[str] = None
     description: Optional[str] = None
     preview: str
 
@@ -13,7 +13,7 @@ class InquiryResponse(BaseModel):
     name: str
     email: str
     inquiry: str
-    answers: Optional[str] = Field(default=None)  # Make answers optional
+    # answers: Optional[str] = Field(default=None)  # Make answers optional
     status: int
     screens: List[ScreenResponse]
 

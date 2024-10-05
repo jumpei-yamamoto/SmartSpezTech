@@ -55,21 +55,20 @@ async def save_inquiry_data(request: InquiryRequest):
             name=request.name,
             email=request.email,
             inquiry=request.message,
-            answers=json.dumps(request.simulationData[0].answers)  # JSON文字列に変換
+            # answers=json.dumps(request.simulationData.answers)  # JSON文字列に変換
         )
         db.add(new_estimate)
         db.flush()  # IDを生成するためにflushする
 
         # Screenモデルを生成して保存
-        for screen_data in request.simulationData:
-            new_screen = Screen(
-                estimate_id=new_estimate.id,
-                title=screen_data.title,
-                catchphrase=screen_data.catchphrase,
-                description=screen_data.description,
-                preview=screen_data.preview
-            )
-            db.add(new_screen)
+        new_screen = Screen(
+            estimate_id=new_estimate.id,
+            title=request.simulationData.title,
+            text=request.simulationData.text,
+            description=request.simulationData.screen_description,
+            preview=request.simulationData.html
+        )
+        db.add(new_screen)
 
         db.commit()
         db.refresh(new_estimate)
@@ -83,9 +82,6 @@ async def save_inquiry_data(request: InquiryRequest):
             logging.info(f"名前: {saved_estimate.name}, メール: {saved_estimate.email}")
             logging.info(f"問い合わせ内容: {saved_estimate.inquiry[:100]}...")  # 最初の100文字のみログ出力
             
-            # 関連する画面情報も確認
-            for screen in saved_estimate.screens:
-                logging.info(f"画面情報 - タイトル: {screen.title}, キャッチフレーズ: {screen.catchphrase}")
         else:
             logging.error(f"見積もり（ID: {new_estimate.id}）のデータベースへの保存が確認できませんでした。")
         
@@ -136,6 +132,7 @@ async def generate_fixed_preview(answers):
     result = []
     html_template = ""
     screen_description = ""
+    title = ""  # タイトルを格納する変数を追加
 
     # 質問1と質問2の回答を取得
     q1_answer = answers.get("1", "")
@@ -150,32 +147,41 @@ async def generate_fixed_preview(answers):
         if "データ入力・管理" in q2_answer:
             template_name = "pattern1.html"
             description_file_name = "description1.txt"
+            title = "業務効率化データ管理システム"
         elif "レポート作成" in q2_answer:
             template_name = "pattern2.html"
             description_file_name = "description2.txt"
+            title = "効率的レポート作成システム"
         elif "スケジュール管理" in q2_answer:
             template_name = "pattern3.html"
             description_file_name = "description3.txt"
+            title = "社内スケジュール最適化システム"
     elif q1_answer == "顧客サービスの向上":
         if "データ入力・管理" in q2_answer:
             template_name = "pattern4.html"
             description_file_name = "description4.txt"
+            title = "顧客データ統合管理システム"
         elif "レポート作成" in q2_answer:
             template_name = "pattern5.html"
             description_file_name = "description5.txt"
+            title = "顧客満足度分析レポートシステム"
         elif "スケジュール管理" in q2_answer:
             template_name = "pattern6.html"
             description_file_name = "description6.txt"
+            title = "顧客対応スケジューリングシステム"
     elif q1_answer == "売上・利益の増加":
         if "データ入力・管理" in q2_answer:
             template_name = "pattern7.html"
             description_file_name = "description7.txt"
+            title = "売上データ分析・管理システム"
         elif "レポート作成" in q2_answer:
             template_name = "pattern8.html"
             description_file_name = "description8.txt"
+            title = "売上予測レポートシステム"
         elif "スケジュール管理" in q2_answer:
             template_name = "pattern9.html"
             description_file_name = "description9.txt"
+            title = "営業活動最適化スケジューラー"
 
     # テンプレートファイルの読み込み
     print(template_name)
@@ -207,7 +213,7 @@ async def generate_fixed_preview(answers):
         q1_proposal = "チャットボットやFAQシステムで迅速な顧客対応を実現を検討されてみてはいかがでしょうか。"
     elif q1_answer == "売上・利益の増加":
         q1_proposal = "データ分析ツールの導入で市場動向を把握検討をされてみてはいかがでしょうか。"
-    result.append(f"お客様の回答: {q1_answer}\n提案内容: {q1_proposal}")
+    result.append(f"質問：開発するシステムの主な目的は何ですか？\n\nお客様の回答: {q1_answer}\n提案内容: {q1_proposal}")
 
     # 質問2の処理
     q2_proposal = "主な機能として、"
@@ -218,7 +224,7 @@ async def generate_fixed_preview(answers):
     elif "スケジュール管理" in q2_answer:
         q2_proposal += "カレンダー機能でタスクやイベントを可視化"
     q2_proposal = q2_proposal + "を実装します。"
-    result.append(f"お客様の回答: {q2_answer}\n 提案内容: {q2_proposal}")
+    result.append(f"質問：システムに必要な主な機能は何ですか？\n\nお客様の回答: {q2_answer}\n提案内容: {q2_proposal}")
 
     # 質問3の処理
     q3_answer = answers.get("3", "")
@@ -229,7 +235,7 @@ async def generate_fixed_preview(answers):
         q3_proposal = "画面操作機能は実装しません。"
     elif q3_answer == "分からない":
         q3_proposal = "画面操作機能の必要性については要検討です。"
-    result.append(f"お客様の回答: {q3_answer}\n提案内容: {q3_proposal}")
+    result.append(f"質問：画面操作は必要ですか？\n\nお客様の回答: {q3_answer}\n提案内容: {q3_proposal}")
 
     # 質問4の処理
     q4_answer = answers.get("4", "")
@@ -246,7 +252,7 @@ async def generate_fixed_preview(answers):
         q4_proposal = "文書管理システムでファイルを一元化します。"
     elif "その他" in q4_answer:
         q4_proposal = "取り扱うデータの具体例を伺い適切なシステム開発を目指します。"
-    result.append(f"お客様の回答: {q4_answer}\n提案内容: {q4_proposal}")
+    result.append(f"質問：システムで扱う主なデータは何ですか？\n\nお客様の回答: {q4_answer}\n提案内容: {q4_proposal}")
 
     # 質問5の処理
     q5_answer = answers.get("5", "")
@@ -259,7 +265,7 @@ async def generate_fixed_preview(answers):
         q5_proposal = "既存のシステムと全面的に連携を行います。"
     elif q5_answer == "わからない":
         q5_proposal = "既存のシステムとの連携については要検討です。"
-    result.append(f"お客様の回答: {q5_answer}\n提案内容: {q5_proposal}")
+    result.append(f"質問：既存のシステムとの連携は必要ですか？\n\nお客様の回答: {q5_answer}\n提案内容: {q5_proposal}")
 
     # 質問6の処理
     q6_answer = answers.get("6", "")
@@ -272,7 +278,7 @@ async def generate_fixed_preview(answers):
         q6_proposal = "非常に高度なセキュリティ対策を実装します。"
     elif q6_answer == "わからない":
         q6_proposal = "セキュリティレベルについては要検討です。"
-    result.append(f"お客様の回答: {q6_answer}\n提案内容: {q6_proposal}")
+    result.append(f"質問：セキュリティ要件はどの程度ですか？\n\nお客様の回答: {q6_answer}\n提案内容: {q6_proposal}")
 
     # 質問7の処理
     q7_answer = answers.get("7", "")
@@ -287,10 +293,11 @@ async def generate_fixed_preview(answers):
         q7_proposal = "システム導入後、運用代行を含む手厚いサポートを提供します。"
     elif q7_answer == "わからない":
         q7_proposal = "システム導入後のサポート内容については要検討です。"
-    result.append(f"お客様の回答: {q7_answer}\n提案内容: {q7_proposal}")
+    result.append(f"質問：システム導入後のサポートは必要ですか？\n\nお客様の回答: {q7_answer}\n提案内容: {q7_proposal}")
 
     return {
         "text": "\n\n".join(result),
         "html": html_template,
-        "screen_description": screen_description
+        "screen_description": screen_description,
+        "title": title 
     }
