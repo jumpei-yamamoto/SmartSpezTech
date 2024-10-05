@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import ValidationError
 from app.schemas.estimate import EstimateRequest, InquiryRequest, PreviewRequest
-from app.services.estimate import generate_estimate, save_inquiry_data, generate_preview
+from app.services.estimate import generate_estimate, save_inquiry_data, generate_preview, generate_fixed_preview
 
 router = APIRouter()
 
@@ -25,3 +25,7 @@ async def submit_inquiry(request: InquiryRequest):
 @router.post("/preview")
 async def estimate(request: PreviewRequest):
     return await generate_preview(request.answers)
+
+@router.post("/simulate")
+async def estimate(request: PreviewRequest):
+    return await generate_fixed_preview(request.answers)

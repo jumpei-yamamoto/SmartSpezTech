@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>データ入力効率化システム</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.10.3/cdn.min.js"></script>
+  </head>
+  <body class="bg-gray-100">
+    <div class="flex h-screen">
+      <!-- Sidebar -->
+      <aside class="w-64 bg-white p-4 shadow">
+        <nav class="space-y-2">
+          <button
+            class="w-full flex items-center justify-start py-2 text-left hover:bg-gray-200"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="mr-2 h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 12H9m6 0a6 6 0 10-12 0 6 6 0 1012 0z"
+              />
+            </svg>
+            RPA管理
+          </button>
+          <button
+            class="w-full flex items-center justify-start py-2 text-left hover:bg-gray-200"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="mr-2 h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m5-2v10a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4l2-2h6a2 2 0 012 2v3m0 0l-2-2H9m4 4h2"
+              />
+            </svg>
+            OCR処理
+          </button>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <main class="flex-1 p-6 overflow-auto">
+        <div class="flex justify-between items-center mb-6">
+          <h1 class="text-2xl font-bold">データ入力効率化システム</h1>
+        </div>
+
+        <!-- タブナビゲーション -->
+        <div>
+          <div class="flex space-x-4 border-b">
+            <button
+              id="tabTasks"
+              class="pb-2 border-b-2 border-blue-500 text-blue-500"
+            >
+              タスク一覧
+            </button>
+            <button id="tabEfficiency" class="pb-2">効率分析</button>
+            <button id="tabDocuments" class="pb-2">文書管理</button>
+          </div>
+
+          <!-- タブコンテンツ -->
+          <div id="contentTasks">
+            <!-- タスク一覧の内容 -->
+            <h2 class="text-xl font-bold mb-4">データ入力タスク</h2>
+            <table class="min-w-full bg-white">
+              <thead>
+                <tr>
+                  <th class="px-4 py-2">タスク名</th>
+                  <th class="px-4 py-2">タイプ</th>
+                  <th class="px-4 py-2">状態</th>
+                  <th class="px-4 py-2">進捗</th>
+                  <th class="px-4 py-2">アクション</th>
+                </tr>
+              </thead>
+              <tbody id="taskList">
+                <!-- JavaScriptでタスク行を追加 -->
+              </tbody>
+            </table>
+          </div>
+
+          <div id="contentEfficiency" class="hidden">
+            <!-- 効率分析の内容 -->
+            <h2 class="text-xl font-bold mb-4">効率分析</h2>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="p-4 bg-white rounded shadow">
+                <h3 class="font-bold">作業時間削減率</h3>
+                <div class="text-4xl font-bold text-green-600">35%</div>
+                <p class="text-sm text-gray-600">前月比 +5%</p>
+              </div>
+              <div class="p-4 bg-white rounded shadow">
+                <h3 class="font-bold">エラー率</h3>
+                <div class="text-4xl font-bold text-red-600">0.5%</div>
+                <p class="text-sm text-gray-600">前月比 -0.2%</p>
+              </div>
+            </div>
+          </div>
+
+          <div id="contentDocuments" class="hidden">
+            <!-- 文書管理の内容 -->
+            <h2 class="text-xl font-bold mb-4">文書管理</h2>
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-lg font-semibold">最近の文書</h3>
+              <button
+                class="flex items-center px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="mr-2 h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+                アップロード
+              </button>
+            </div>
+            <table class="min-w-full bg-white">
+              <thead>
+                <tr>
+                  <th class="px-4 py-2">文書名</th>
+                  <th class="px-4 py-2">タイプ</th>
+                  <th class="px-4 py-2">アップロード日</th>
+                  <th class="px-4 py-2">ステータス</th>
+                  <th class="px-4 py-2">アクション</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="border px-4 py-2">請求書_2024_03.pdf</td>
+                  <td class="border px-4 py-2">請求書</td>
+                  <td class="border px-4 py-2">2024-03-15</td>
+                  <td class="border px-4 py-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-4 w-4 text-green-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  </td>
+                  <td class="border px-4 py-2">
+                    <button class="text-blue-500">ダウンロード</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="border px-4 py-2">契約書_A社.pdf</td>
+                  <td class="border px-4 py-2">契約書</td>
+                  <td class="border px-4 py-2">2024-03-14</td>
+                  <td class="border px-4 py-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-4 w-4 text-yellow-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  </td>
+                  <td class="border px-4 py-2">
+                    <button class="text-blue-500">ダウンロード</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      const tasks = [
+        {
+          id: 1,
+          name: "請求書データ入力",
+          type: "RPA",
+          status: "完了",
+          progress: 100,
+        },
+        {
+          id: 2,
+          name: "契約書スキャン",
+          type: "OCR",
+          status: "進行中",
+          progress: 60,
+        },
+        {
+          id: 3,
+          name: "顧客情報更新",
+          type: "手動",
+          status: "未着手",
+          progress: 0,
+        },
+        {
+          id: 4,
+          name: "経費報告書作成",
+          type: "自動文書",
+          status: "進行中",
+          progress: 80,
+        },
+      ];
+
+      const taskList = document.getElementById("taskList");
+      const tabTasks = document.getElementById("tabTasks");
+      const tabEfficiency = document.getElementById("tabEfficiency");
+      const tabDocuments = document.getElementById("tabDocuments");
+      const contentTasks = document.getElementById("contentTasks");
+      const contentEfficiency = document.getElementById("contentEfficiency");
+      const contentDocuments = document.getElementById("contentDocuments");
+
+      function renderTasks() {
+        taskList.innerHTML = tasks
+          .map(
+            (task) => `
+        <tr>
+          <td class="border px-4 py-2">${task.name}</td>
+          <td class="border px-4 py-2">${task.type}</td>
+          <td class="border px-4 py-2">${task.status}</td>
+          <td class="border px-4 py-2">
+            <div class="w-[60px] bg-gray-200 rounded-full">
+              <div class="bg-blue-500 text-xs leading-none py-1 text-center text-white rounded-full" style="width:${task.progress}%"></div>
+            </div>
+          </td>
+          <td class="border px-4 py-2">
+            <button class="text-blue-500">編集</button>
+            <button class="text-red-500" onclick="deleteTask(${task.id})">削除</button>
+          </td>
+        </tr>
+      `
+          )
+          .join("");
+      }
+
+      function deleteTask(id) {
+        const index = tasks.findIndex((task) => task.id === id);
+        tasks.splice(index, 1);
+        renderTasks();
+      }
+
+      tabTasks.addEventListener("click", () => {
+        contentTasks.classList.remove("hidden");
+        contentEfficiency.classList.add("hidden");
+        contentDocuments.classList.add("hidden");
+        tabTasks.classList.add("border-blue-500", "text-blue-500");
+        tabEfficiency.classList.remove("border-blue-500", "text-blue-500");
+        tabDocuments.classList.remove("border-blue-500", "text-blue-500");
+      });
+
+      tabEfficiency.addEventListener("click", () => {
+        contentTasks.classList.add("hidden");
+        contentEfficiency.classList.remove("hidden");
+        contentDocuments.classList.add("hidden");
+        tabEfficiency.classList.add("border-blue-500", "text-blue-500");
+        tabTasks.classList.remove("border-blue-500", "text-blue-500");
+        tabDocuments.classList.remove("border-blue-500", "text-blue-500");
+      });
+
+      tabDocuments.addEventListener("click", () => {
+        contentTasks.classList.add("hidden");
+        contentEfficiency.classList.add("hidden");
+        contentDocuments.classList.remove("hidden");
+        tabDocuments.classList.add("border-blue-500", "text-blue-500");
+        tabTasks.classList.remove("border-blue-500", "text-blue-500");
+        tabEfficiency.classList.remove("border-blue-500", "text-blue-500");
+      });
+
+      renderTasks();
+    </script>
+  </body>
+</html>

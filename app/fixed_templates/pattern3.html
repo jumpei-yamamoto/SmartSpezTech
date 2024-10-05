@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>スケジュール管理ダッシュボード</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.10.3/cdn.min.js"></script>
+  </head>
+  <body class="bg-gray-100">
+    <div class="flex h-screen">
+      <!-- Sidebar -->
+      <aside class="w-64 bg-white p-4 shadow">
+        <nav class="space-y-2">
+          <button
+            class="w-full flex items-center justify-start py-2 text-left hover:bg-gray-200"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="mr-2 h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 7h18M3 11h18M3 15h18M3 19h18"
+              />
+            </svg>
+            タスク一覧
+          </button>
+          <button
+            class="w-full flex items-center justify-start py-2 text-left hover:bg-gray-200"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="mr-2 h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 7V3m0 0H6m2 0h2m4 4v4m0 0h2m-2 0h-2m-4 0v4m0 0H6m2 0h2m0 4v-4m0 0h4"
+              />
+            </svg>
+            カレンダー表示
+          </button>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <main class="flex-1 p-6 overflow-auto">
+        <div class="flex justify-between items-center mb-6">
+          <h1 class="text-2xl font-bold">スケジュール管理ダッシュボード</h1>
+          <select class="px-4 py-2 border rounded-md">
+            <option value="google">Googleカレンダー</option>
+            <option value="outlook">Outlookカレンダー</option>
+            <option value="apple">Appleカレンダー</option>
+          </select>
+        </div>
+
+        <!-- タブナビゲーション -->
+        <div>
+          <div class="flex space-x-4 border-b">
+            <button
+              id="tabTasks"
+              class="pb-2 border-b-2 border-blue-500 text-blue-500"
+            >
+              タスク
+            </button>
+            <button id="tabTimeline" class="pb-2">タイムライン</button>
+          </div>
+
+          <!-- タスク一覧 -->
+          <div id="contentTasks">
+            <h2 class="text-xl font-bold mb-4">タスク一覧</h2>
+            <div id="taskList" class="space-y-4"></div>
+
+            <div class="mt-4">
+              <h3 class="text-lg font-semibold mb-2">新規タスク追加</h3>
+              <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="space-y-2">
+                    <label for="taskTitle" class="block text-sm"
+                      >タスク名</label
+                    >
+                    <input
+                      id="taskTitle"
+                      type="text"
+                      class="w-full px-3 py-2 border rounded-md"
+                    />
+                  </div>
+                  <div class="space-y-2">
+                    <label for="taskDeadline" class="block text-sm">期限</label>
+                    <input
+                      id="taskDeadline"
+                      type="date"
+                      class="w-full px-3 py-2 border rounded-md"
+                    />
+                  </div>
+                </div>
+                <div class="space-y-2">
+                  <label for="taskTime" class="block text-sm"
+                    >見積時間（分）</label
+                  >
+                  <input
+                    id="taskTime"
+                    type="number"
+                    class="w-full px-3 py-2 border rounded-md"
+                  />
+                </div>
+                <button
+                  id="addTaskButton"
+                  class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                >
+                  タスクを追加
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- タイムライン表示 -->
+          <div id="contentTimeline" class="hidden">
+            <h2 class="text-xl font-bold mb-4">タイムライン表示</h2>
+            <p>ここにタイムライン表示のコンポーネントが入ります。</p>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      const tasks = [
+        {
+          id: 1,
+          title: "プロジェクトA企画書作成",
+          deadline: "2024-03-15",
+          estimatedTime: 120,
+          progress: 60,
+          subtasks: [
+            { id: 11, title: "市場調査", completed: true },
+            { id: 12, title: "競合分析", completed: false },
+            { id: 13, title: "企画書ドラフト作成", completed: false },
+          ],
+        },
+        {
+          id: 2,
+          title: "クライアントミーティング準備",
+          deadline: "2024-03-10",
+          estimatedTime: 60,
+          progress: 30,
+          subtasks: [
+            { id: 21, title: "プレゼン資料作成", completed: false },
+            { id: 22, title: "データ収集", completed: true },
+          ],
+        },
+      ];
+
+      const taskList = document.getElementById("taskList");
+      const tabTasks = document.getElementById("tabTasks");
+      const tabTimeline = document.getElementById("tabTimeline");
+      const contentTasks = document.getElementById("contentTasks");
+      const contentTimeline = document.getElementById("contentTimeline");
+      const addTaskButton = document.getElementById("addTaskButton");
+      const taskTitle = document.getElementById("taskTitle");
+      const taskDeadline = document.getElementById("taskDeadline");
+      const taskTime = document.getElementById("taskTime");
+
+      function renderTasks() {
+        taskList.innerHTML = tasks
+          .map(
+            (task) => `
+        <div class="p-4 bg-white shadow rounded">
+          <div class="flex justify-between items-start mb-2">
+            <div>
+              <h3 class="font-semibold">${task.title}</h3>
+              <p class="text-sm text-gray-500">期限: ${task.deadline}</p>
+              <p class="text-sm text-gray-500">見積時間: ${
+                task.estimatedTime
+              }分</p>
+            </div>
+            <div class="flex space-x-2">
+              <button class="text-blue-500">編集</button>
+              <button class="text-red-500" onclick="deleteTask(${
+                task.id
+              })">削除</button>
+            </div>
+          </div>
+          <div class="h-2 w-full bg-gray-200 rounded-full mb-2">
+            <div class="h-full bg-blue-500 rounded-full" style="width: ${
+              task.progress
+            }%"></div>
+          </div>
+          <div class="space-y-2">
+            ${task.subtasks
+              .map(
+                (subtask) => `
+              <div class="flex items-center">
+                <input type="checkbox" ${subtask.completed ? "checked" : ""} 
+                  onchange="toggleSubtask(${task.id}, ${
+                  subtask.id
+                })" class="mr-2">
+                <label class="text-sm">${subtask.title}</label>
+              </div>
+            `
+              )
+              .join("")}
+          </div>
+        </div>
+      `
+          )
+          .join("");
+      }
+
+      function toggleSubtask(taskId, subtaskId) {
+        const task = tasks.find((t) => t.id === taskId);
+        const subtask = task.subtasks.find((s) => s.id === subtaskId);
+        subtask.completed = !subtask.completed;
+        renderTasks();
+      }
+
+      function deleteTask(id) {
+        const index = tasks.findIndex((task) => task.id === id);
+        tasks.splice(index, 1);
+        renderTasks();
+      }
+
+      tabTasks.addEventListener("click", () => {
+        contentTasks.classList.remove("hidden");
+        contentTimeline.classList.add("hidden");
+        tabTasks.classList.add("border-blue-500", "text-blue-500");
+        tabTimeline.classList.remove("border-blue-500", "text-blue-500");
+      });
+
+      tabTimeline.addEventListener("click", () => {
+        contentTasks.classList.add("hidden");
+        contentTimeline.classList.remove("hidden");
+        tabTimeline.classList.add("border-blue-500", "text-blue-500");
+        tabTasks.classList.remove("border-blue-500", "text-blue-500");
+      });
+
+      addTaskButton.addEventListener("click", () => {
+        if (taskTitle.value && taskDeadline.value && taskTime.value) {
+          const newTask = {
+            id: Date.now(),
+            title: taskTitle.value,
+            deadline: taskDeadline.value,
+            estimatedTime: taskTime.value,
+            progress: 0,
+            subtasks: [],
+          };
+          tasks.push(newTask);
+          taskTitle.value = "";
+          taskDeadline.value = "";
+          taskTime.value = "";
+          renderTasks();
+        }
+      });
+
+      renderTasks();
+    </script>
+  </body>
+</html>

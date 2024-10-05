@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>顧客サービス向上レポート</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100">
+    <div class="flex h-screen">
+      <!-- Sidebar -->
+      <aside class="w-64 bg-white p-4 shadow">
+        <nav class="space-y-2">
+          <button
+            class="w-full flex items-center justify-start py-2 text-left hover:bg-gray-200"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="mr-2 h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path d="M3 12h18M9 3v18" />
+            </svg>
+            顧客フィードバック
+          </button>
+          <button
+            class="w-full flex items-center justify-start py-2 text-left hover:bg-gray-200"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="mr-2 h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path d="M3 12h18M9 3v18" />
+            </svg>
+            分析レポート
+          </button>
+          <button
+            class="w-full flex items-center justify-start py-2 text-left hover:bg-gray-200"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="mr-2 h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path d="M3 12h18M9 3v18" />
+            </svg>
+            CS向上施策
+          </button>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <main class="flex-1 p-6 overflow-auto">
+        <div class="flex justify-between items-center mb-6">
+          <h1 class="text-2xl font-bold">顧客サービス向上レポート</h1>
+          <button
+            id="addFeedbackButton"
+            class="flex items-center px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="mr-2 h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path d="M12 4v16m8-8H4" />
+            </svg>
+            新規フィードバック追加
+          </button>
+        </div>
+
+        <!-- タブナビゲーション -->
+        <div>
+          <div class="flex space-x-4 border-b">
+            <button
+              id="tabFeedback"
+              class="pb-2 border-b-2 border-blue-500 text-blue-500"
+            >
+              顧客フィードバック
+            </button>
+            <button id="tabAnalysis" class="pb-2">分析レポート</button>
+            <button id="tabImprovement" class="pb-2">CS向上施策</button>
+          </div>
+
+          <!-- 顧客フィードバック -->
+          <div id="contentFeedback">
+            <h2 class="text-xl font-bold mb-4">顧客フィードバック一覧</h2>
+            <table class="min-w-full bg-white">
+              <thead>
+                <tr>
+                  <th class="px-4 py-2">顧客名</th>
+                  <th class="px-4 py-2">状況</th>
+                  <th class="px-4 py-2">感情</th>
+                  <th class="px-4 py-2">顧客の視点</th>
+                  <th class="px-4 py-2">対応内容</th>
+                  <th class="px-4 py-2">満足度</th>
+                </tr>
+              </thead>
+              <tbody id="feedbackList"></tbody>
+            </table>
+
+            <!-- フィードバック追加モーダル -->
+            <div
+              id="feedbackModal"
+              class="fixed inset-0 bg-gray-800 bg-opacity-75 hidden"
+            >
+              <div
+                class="relative w-full max-w-md mx-auto mt-24 bg-white rounded-lg shadow-lg p-6"
+              >
+                <h3 class="text-lg font-semibold">新規顧客フィードバック</h3>
+                <div class="mt-4 space-y-4">
+                  <div class="grid grid-cols-4 items-center gap-4">
+                    <label for="customerName" class="text-right">顧客名</label>
+                    <input
+                      id="customerName"
+                      type="text"
+                      class="w-full px-3 py-2 border rounded-md col-span-3"
+                    />
+                  </div>
+                  <div class="grid grid-cols-4 items-center gap-4">
+                    <label for="situation" class="text-right">状況</label>
+                    <textarea
+                      id="situation"
+                      class="w-full px-3 py-2 border rounded-md col-span-3"
+                    ></textarea>
+                  </div>
+                  <div class="grid grid-cols-4 items-center gap-4">
+                    <label for="emotion" class="text-right">感情</label>
+                    <input
+                      id="emotion"
+                      type="text"
+                      class="w-full px-3 py-2 border rounded-md col-span-3"
+                    />
+                  </div>
+                  <div class="grid grid-cols-4 items-center gap-4">
+                    <label for="customerPerspective" class="text-right"
+                      >顧客の視点</label
+                    >
+                    <textarea
+                      id="customerPerspective"
+                      class="w-full px-3 py-2 border rounded-md col-span-3"
+                    ></textarea>
+                  </div>
+                  <div class="grid grid-cols-4 items-center gap-4">
+                    <label for="response" class="text-right">対応内容</label>
+                    <textarea
+                      id="response"
+                      class="w-full px-3 py-2 border rounded-md col-span-3"
+                    ></textarea>
+                  </div>
+                  <div class="grid grid-cols-4 items-center gap-4">
+                    <label for="satisfaction" class="text-right">満足度</label>
+                    <select
+                      id="satisfaction"
+                      class="w-full px-3 py-2 border rounded-md col-span-3"
+                    >
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                    </select>
+                  </div>
+                  <div class="flex justify-end space-x-2">
+                    <button
+                      id="closeModal"
+                      class="px-4 py-2 bg-gray-500 text-white rounded"
+                    >
+                      キャンセル
+                    </button>
+                    <button
+                      id="saveFeedbackButton"
+                      class="px-4 py-2 bg-blue-500 text-white rounded"
+                    >
+                      追加
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 分析レポート -->
+          <div id="contentAnalysis" class="hidden">
+            <h2 class="text-xl font-bold mb-4">分析レポート</h2>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="p-4 bg-white shadow rounded">
+                <h3 class="text-lg font-semibold">感情分析</h3>
+                <div class="w-full h-64 bg-gray-200 rounded"></div>
+              </div>
+              <div class="p-4 bg-white shadow rounded">
+                <h3 class="text-lg font-semibold">満足度推移</h3>
+                <div class="w-full h-64 bg-gray-200 rounded"></div>
+              </div>
+              <div class="p-4 bg-white shadow rounded">
+                <h3 class="text-lg font-semibold">主要な問題カテゴリ</h3>
+                <div class="w-full h-64 bg-gray-200 rounded"></div>
+              </div>
+              <div class="p-4 bg-white shadow rounded">
+                <h3 class="text-lg font-semibold">対応時間分析</h3>
+                <div class="w-full h-64 bg-gray-200 rounded"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CS向上施策 -->
+          <div id="contentImprovement" class="hidden">
+            <h2 class="text-xl font-bold mb-4">CS向上施策</h2>
+            <table class="min-w-full bg-white">
+              <thead>
+                <tr>
+                  <th class="px-4 py-2">施策</th>
+                  <th class="px-4 py-2">説明</th>
+                  <th class="px-4 py-2">状態</th>
+                  <th class="px-4 py-2">効果</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="border px-4 py-2">接客教育の強化</td>
+                  <td class="border px-4 py-2">
+                    全スタッフに対する月1回の接客研修の実施
+                  </td>
+                  <td class="border px-4 py-2">進行中</td>
+                  <td class="border px-4 py-2">
+                    <span class="text-green-500">高</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="border px-4 py-2">顧客アンケートの定期実施</td>
+                  <td class="border px-4 py-2">
+                    購入後1週間以内にメールでアンケート送付
+                  </td>
+                  <td class="border px-4 py-2">計画中</td>
+                  <td class="border px-4 py-2">
+                    <span class="text-yellow-500">中</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="border px-4 py-2">情報提供の迅速化</td>
+                  <td class="border px-4 py-2">
+                    FAQ拡充とチャットボットの導入
+                  </td>
+                  <td class="border px-4 py-2">完了</td>
+                  <td class="border px-4 py-2">
+                    <span class="text-green-500">高</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="border px-4 py-2">従業員満足度向上プログラム</td>
+                  <td class="border px-4 py-2">
+                    福利厚生の拡充と定期的な1on1ミーティングの実施
+                  </td>
+                  <td class="border px-4 py-2">進行中</td>
+                  <td class="border px-4 py-2">
+                    <span class="text-red-500">要改善</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      const feedbacks = [
+        {
+          id: 1,
+          customerName: "山田太郎",
+          situation: "商品の不具合について問い合わせ",
+          emotion: "不満",
+          customerPerspective:
+            "商品が期待通りに動作しない。サポートの対応が遅い。",
+          response: "不具合の詳細を確認し、交換対応を行った。",
+          satisfaction: 3,
+        },
+        {
+          id: 2,
+          customerName: "佐藤花子",
+          situation: "返品手続きについて問い合わせ",
+          emotion: "混乱",
+          customerPerspective: "返品手続きが複雑で分かりにくい。説明が不十分。",
+          response: "手順を丁寧に説明し、返品フォームへの記入をサポートした。",
+          satisfaction: 4,
+        },
+      ];
+
+      const feedbackList = document.getElementById("feedbackList");
+      const tabFeedback = document.getElementById("tabFeedback");
+      const tabAnalysis = document.getElementById("tabAnalysis");
+      const tabImprovement = document.getElementById("tabImprovement");
+      const contentFeedback = document.getElementById("contentFeedback");
+      const contentAnalysis = document.getElementById("contentAnalysis");
+      const contentImprovement = document.getElementById("contentImprovement");
+      const feedbackModal = document.getElementById("feedbackModal");
+      const addFeedbackButton = document.getElementById("addFeedbackButton");
+      const closeModal = document.getElementById("closeModal");
+      const saveFeedbackButton = document.getElementById("saveFeedbackButton");
+      const customerName = document.getElementById("customerName");
+      const situation = document.getElementById("situation");
+      const emotion = document.getElementById("emotion");
+      const customerPerspective = document.getElementById(
+        "customerPerspective"
+      );
+      const response = document.getElementById("response");
+      const satisfaction = document.getElementById("satisfaction");
+
+      function renderFeedbacks() {
+        feedbackList.innerHTML = feedbacks
+          .map(
+            (feedback) => `
+        <tr>
+          <td class="border px-4 py-2">${feedback.customerName}</td>
+          <td class="border px-4 py-2">${feedback.situation}</td>
+          <td class="border px-4 py-2">${feedback.emotion}</td>
+          <td class="border px-4 py-2">${feedback.customerPerspective}</td>
+          <td class="border px-4 py-2">${feedback.response}</td>
+          <td class="border px-4 py-2">${"★".repeat(feedback.satisfaction)}</td>
+        </tr>
+      `
+          )
+          .join("");
+      }
+
+      tabFeedback.addEventListener("click", () => {
+        contentFeedback.classList.remove("hidden");
+        contentAnalysis.classList.add("hidden");
+        contentImprovement.classList.add("hidden");
+        tabFeedback.classList.add("border-blue-500", "text-blue-500");
+        tabAnalysis.classList.remove("border-blue-500", "text-blue-500");
+        tabImprovement.classList.remove("border-blue-500", "text-blue-500");
+      });
+
+      tabAnalysis.addEventListener("click", () => {
+        contentFeedback.classList.add("hidden");
+        contentAnalysis.classList.remove("hidden");
+        contentImprovement.classList.add("hidden");
+        tabAnalysis.classList.add("border-blue-500", "text-blue-500");
+        tabFeedback.classList.remove("border-blue-500", "text-blue-500");
+        tabImprovement.classList.remove("border-blue-500", "text-blue-500");
+      });
+
+      tabImprovement.addEventListener("click", () => {
+        contentFeedback.classList.add("hidden");
+        contentAnalysis.classList.add("hidden");
+        contentImprovement.classList.remove("hidden");
+        tabImprovement.classList.add("border-blue-500", "text-blue-500");
+        tabFeedback.classList.remove("border-blue-500", "text-blue-500");
+        tabAnalysis.classList.remove("border-blue-500", "text-blue-500");
+      });
+
+      addFeedbackButton.addEventListener("click", () => {
+        feedbackModal.classList.remove("hidden");
+      });
+
+      closeModal.addEventListener("click", () => {
+        feedbackModal.classList.add("hidden");
+      });
+
+      saveFeedbackButton.addEventListener("click", () => {
+        const newFeedback = {
+          id: feedbacks.length + 1,
+          customerName: customerName.value,
+          situation: situation.value,
+          emotion: emotion.value,
+          customerPerspective: customerPerspective.value,
+          response: response.value,
+          satisfaction: parseInt(satisfaction.value),
+        };
+        feedbacks.push(newFeedback);
+        customerName.value = "";
+        situation.value = "";
+        emotion.value = "";
+        customerPerspective.value = "";
+        response.value = "";
+        satisfaction.value = "3";
+        feedbackModal.classList.add("hidden");
+        renderFeedbacks();
+      });
+
+      renderFeedbacks();
+    </script>
+  </body>
+</html>

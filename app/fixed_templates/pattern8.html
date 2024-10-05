@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>売上増加レポートシステム</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .tab-content {
+        display: none;
+      }
+      .tab-content.active {
+        display: block;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100">
+    <div class="flex h-screen">
+      <!-- Sidebar -->
+      <aside class="w-64 bg-white p-4 shadow">
+        <nav class="space-y-2">
+          <button
+            id="tab-cover-btn"
+            class="w-full flex items-center justify-start py-2 text-left hover:bg-gray-200"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="mr-2 h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+            >
+              <path d="M5 13l4 4L19 7" />
+            </svg>
+            表紙
+          </button>
+          <button
+            id="tab-summary-btn"
+            class="w-full flex items-center justify-start py-2 text-left hover:bg-gray-200"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="mr-2 h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+            >
+              <path d="M5 13l4 4L19 7" />
+            </svg>
+            概要
+          </button>
+          <button
+            id="tab-data-btn"
+            class="w-full flex items-center justify-start py-2 text-left hover:bg-gray-200"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="mr-2 h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+            >
+              <path d="M5 13l4 4L19 7" />
+            </svg>
+            詳細データ
+          </button>
+          <button
+            id="tab-analysis-btn"
+            class="w-full flex items-center justify-start py-2 text-left hover:bg-gray-200"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="mr-2 h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+            >
+              <path d="M5 13l4 4L19 7" />
+            </svg>
+            分析と考察
+          </button>
+          <button
+            id="tab-appendix-btn"
+            class="w-full flex items-center justify-start py-2 text-left hover:bg-gray-200"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="mr-2 h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+            >
+              <path d="M5 13l4 4L19 7" />
+            </svg>
+            付録
+          </button>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <main class="flex-1 p-6 overflow-auto">
+        <div class="flex justify-between items-center mb-6">
+          <h1 class="text-2xl font-bold">売上増加レポート作成システム</h1>
+          <div class="flex space-x-2">
+            <button class="px-4 py-2 border rounded">保存</button>
+            <button class="px-4 py-2 bg-blue-500 text-white rounded">
+              エクスポート
+            </button>
+          </div>
+        </div>
+
+        <!-- Tabs content -->
+        <div id="tab-cover" class="tab-content active">
+          <div class="p-4 bg-white shadow rounded">
+            <h2 class="text-xl font-semibold mb-4">レポート表紙</h2>
+            <div class="space-y-4">
+              <div class="space-y-2">
+                <label for="report-title" class="block text-sm font-medium"
+                  >レポートタイトル</label
+                >
+                <input
+                  id="report-title"
+                  type="text"
+                  class="block w-full border rounded py-2 px-3"
+                />
+              </div>
+              <div class="space-y-2">
+                <label for="report-author" class="block text-sm font-medium"
+                  >作成者</label
+                >
+                <input
+                  id="report-author"
+                  type="text"
+                  class="block w-full border rounded py-2 px-3"
+                />
+              </div>
+              <div class="space-y-2">
+                <label for="report-date" class="block text-sm font-medium"
+                  >作成日</label
+                >
+                <input
+                  id="report-date"
+                  type="date"
+                  class="block w-full border rounded py-2 px-3"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Summary Tab -->
+        <div id="tab-summary" class="tab-content">
+          <div class="p-4 bg-white shadow rounded">
+            <h2 class="text-xl font-semibold mb-4">レポート概要</h2>
+            <div class="space-y-2">
+              <label for="report-summary" class="block text-sm font-medium"
+                >概要</label
+              >
+              <textarea
+                id="report-summary"
+                rows="5"
+                class="block w-full border rounded py-2 px-3"
+              >
+2024年第1四半期の売上は前年同期比20%増加しました。主な要因は新製品の導入と効果的なマーケティングキャンペーンです。</textarea
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Detailed Data Tab -->
+        <div id="tab-data" class="tab-content">
+          <div class="p-4 bg-white shadow rounded">
+            <h2 class="text-xl font-semibold mb-4">月別売上推移</h2>
+            <table class="w-full table-auto border-collapse">
+              <thead>
+                <tr class="bg-gray-100 border-b">
+                  <th class="p-4 text-left">月</th>
+                  <th class="p-4 text-left">売上</th>
+                  <th class="p-4 text-left">来訪者数</th>
+                  <th class="p-4 text-left">成約数</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="p-4">1月</td>
+                  <td class="p-4">10,000,000円</td>
+                  <td class="p-4">5,000人</td>
+                  <td class="p-4">500件</td>
+                </tr>
+                <tr>
+                  <td class="p-4">2月</td>
+                  <td class="p-4">12,000,000円</td>
+                  <td class="p-4">5,500人</td>
+                  <td class="p-4">550件</td>
+                </tr>
+                <tr>
+                  <td class="p-4">3月</td>
+                  <td class="p-4">15,000,000円</td>
+                  <td class="p-4">6,000人</td>
+                  <td class="p-4">600件</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="p-4 bg-white shadow rounded mt-4">
+            <h2 class="text-xl font-semibold mb-4">製品別売上</h2>
+            <table class="w-full table-auto border-collapse">
+              <thead>
+                <tr class="bg-gray-100 border-b">
+                  <th class="p-4 text-left">製品</th>
+                  <th class="p-4 text-left">売上</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="p-4">製品A</td>
+                  <td class="p-4">15,000,000円</td>
+                </tr>
+                <tr>
+                  <td class="p-4">製品B</td>
+                  <td class="p-4">12,000,000円</td>
+                </tr>
+                <tr>
+                  <td class="p-4">製品C</td>
+                  <td class="p-4">10,000,000円</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Analysis Tab -->
+        <div id="tab-analysis" class="tab-content">
+          <div class="p-4 bg-white shadow rounded">
+            <h2 class="text-xl font-semibold mb-4">分析と考察</h2>
+            <div class="space-y-2">
+              <label for="report-analysis" class="block text-sm font-medium"
+                >分析</label
+              >
+              <textarea
+                id="report-analysis"
+                rows="5"
+                class="block w-full border rounded py-2 px-3"
+              >
+新製品の導入により、顧客の関心が高まり、来訪者数が増加しました。また、SNSを活用したマーケティングキャンペーンにより、若年層の顧客獲得に成功しました。</textarea
+              >
+            </div>
+            <div class="space-y-2 mt-4">
+              <label for="report-strategies" class="block text-sm font-medium"
+                >今後の戦略</label
+              >
+              <textarea
+                id="report-strategies"
+                rows="5"
+                class="block w-full border rounded py-2 px-3"
+              >
+1. 新製品のさらなる開発と導入\n2. SNSマーケティングの強化\n3. 既存製品のリブランディング\n4. 顧客ロイヤリティプログラムの導入</textarea
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Appendix Tab -->
+        <div id="tab-appendix" class="tab-content">
+          <div class="p-4 bg-white shadow rounded">
+            <h2 class="text-xl font-semibold mb-4">付録</h2>
+            <div class="space-y-4">
+              <div class="space-y-2">
+                <label for="external-factors" class="block text-sm font-medium"
+                  >外的要因</label
+                >
+                <textarea
+                  id="external-factors"
+                  rows="4"
+                  class="block w-full border rounded py-2 px-3"
+                >
+春季の温暖な気候により、来店客数が増加しました。また、景気回復の兆しにより、消費者の購買意欲が高まっています。</textarea
+                >
+              </div>
+              <div class="space-y-2">
+                <label for="internal-factors" class="block text-sm font-medium"
+                  >内的要因</label
+                >
+                <textarea
+                  id="internal-factors"
+                  rows="4"
+                  class="block w-full border rounded py-2 px-3"
+                >
+店頭での接客研修を実施し、顧客満足度が向上しました。また、オンラインチャットサポートの導入により、ウェブサイトでの問い合わせ対応が迅速になりました。</textarea
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      // JavaScript to handle tab switching
+      const tabs = document.querySelectorAll("[id$='-btn']");
+      const tabContents = document.querySelectorAll(".tab-content");
+
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          const target = tab.id.replace("-btn", "");
+
+          tabContents.forEach((content) => {
+            content.classList.remove("active");
+          });
+
+          document.getElementById(target).classList.add("active");
+        });
+      });
+    </script>
+  </body>
+</html>

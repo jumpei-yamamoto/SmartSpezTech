@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>売上スケジュール管理</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .tab-content {
+        display: none;
+      }
+      .tab-content.active {
+        display: block;
+      }
+      .dialog {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+      }
+      .dialog-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 500px;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100">
+    <div class="flex h-screen">
+      <!-- Sidebar -->
+      <aside class="w-64 bg-white p-4 shadow">
+        <nav class="space-y-2">
+          <button
+            id="tab-tasks-btn"
+            class="w-full flex items-center justify-start py-2 text-left hover:bg-gray-200"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="mr-2 h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+            >
+              <path d="M5 13l4 4L19 7" />
+            </svg>
+            タスク一覧
+          </button>
+          <button
+            id="tab-calendar-btn"
+            class="w-full flex items-center justify-start py-2 text-left hover:bg-gray-200"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="mr-2 h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+            >
+              <path d="M5 13l4 4L19 7" />
+            </svg>
+            カレンダー表示
+          </button>
+          <button
+            id="tab-team-btn"
+            class="w-full flex items-center justify-start py-2 text-left hover:bg-gray-200"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="mr-2 h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+            >
+              <path d="M5 13l4 4L19 7" />
+            </svg>
+            チーム
+          </button>
+          <button
+            id="tab-analysis-btn"
+            class="w-full flex items-center justify-start py-2 text-left hover:bg-gray-200"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="mr-2 h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+            >
+              <path d="M5 13l4 4L19 7" />
+            </svg>
+            時間分析
+          </button>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <main class="flex-1 p-6 overflow-auto">
+        <div class="flex justify-between items-center mb-6">
+          <h1 class="text-2xl font-bold">売上増加のためのスケジュール管理</h1>
+          <button id="new-task-btn" class="px-4 py-2 bg-blue-500 text-white rounded">
+            新規タスク追加
+          </button>
+        </div>
+
+        <!-- Tabs content -->
+        <div id="tab-tasks" class="tab-content active">
+          <div class="p-4 bg-white shadow rounded">
+            <h2 class="text-xl font-semibold mb-4">タスク一覧</h2>
+            <table class="w-full table-auto border-collapse">
+              <thead>
+                <tr class="bg-gray-100 border-b">
+                  <th class="p-4 text-left">タスク名</th>
+                  <th class="p-4 text-left">優先度</th>
+                  <th class="p-4 text-left">状態</th>
+                  <th class="p-4 text-left">期限</th>
+                  <th class="p-4 text-left">見積時間</th>
+                  <th class="p-4 text-left">担当者</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="p-4">新規顧客開拓</td>
+                  <td class="p-4">高</td>
+                  <td class="p-4">進行中</td>
+                  <td class="p-4">2024-03-15</td>
+                  <td class="p-4">120分</td>
+                  <td class="p-4">山田太郎</td>
+                </tr>
+                <tr>
+                  <td class="p-4">既存顧客フォローアップ</td>
+                  <td class="p-4">中</td>
+                  <td class="p-4">未着手</td>
+                  <td class="p-4">2024-03-18</td>
+                  <td class="p-4">60分</td>
+                  <td class="p-4">佐藤花子</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="tab-calendar" class="tab-content">
+          <div class="p-4 bg-white shadow rounded">
+            <h2 class="text-xl font-semibold mb-4">カレンダー</h2>
+            <div id="calendar-hours" class="space-y-2">
+              <!-- JavaScriptで動的に生成されます -->
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-team" class="tab-content">
+          <div class="p-4 bg-white shadow rounded">
+            <h2 class="text-xl font-semibold mb-4">チームメンバー</h2>
+            <table class="w-full table-auto border-collapse">
+              <thead>
+                <tr class="bg-gray-100 border-b">
+                  <th class="p-4 text-left">名前</th>
+                  <th class="p-4 text-left">役割</th>
+                  <th class="p-4 text-left">担当タスク数</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="p-4">山田太郎</td>
+                  <td class="p-4">営業マネージャー</td>
+                  <td class="p-4">5</td>
+                </tr>
+                <tr>
+                  <td class="p-4">佐藤花子</td>
+                  <td class="p-4">営業担当</td>
+                  <td class="p-4">3</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="tab-analysis" class="tab-content">
+          <div class="p-4 bg-white shadow rounded">
+            <h2 class="text-xl font-semibold mb-4">時間分析</h2>
+            <div class="h-[200px] w-full bg-gray-100 rounded-md"></div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- 新規タスク追加ダイアログ -->
+    <div id="new-task-dialog" class="dialog">
+      <div class="dialog-content rounded-lg">
+        <h2 class="text-xl font-semibold mb-4">新規タスク追加</h2>
+        <p class="mb-4">新しいタスクの詳細を入力してください。</p>
+        <div class="space-y-4">
+          <div class="flex flex-col">
+            <label for="task-title" class="mb-1">タスク名</label>
+            <input id="task-title" type="text" class="border rounded p-2">
+          </div>
+          <div class="flex flex-col">
+            <label for="task-priority" class="mb-1">優先度</label>
+            <select id="task-priority" class="border rounded p-2">
+              <option value="高">高</option>
+              <option value="中">中</option>
+              <option value="低">低</option>
+            </select>
+          </div>
+          <div class="flex flex-col">
+            <label for="task-due-date" class="mb-1">期限</label>
+            <input id="task-due-date" type="date" class="border rounded p-2">
+          </div>
+          <div class="flex flex-col">
+            <label for="task-estimated-time" class="mb-1">見積時間（分）</label>
+            <input id="task-estimated-time" type="number" class="border rounded p-2">
+          </div>
+          <div class="flex flex-col">
+            <label for="task-assignee" class="mb-1">担当者</label>
+            <input id="task-assignee" type="text" class="border rounded p-2">
+          </div>
+        </div>
+        <div class="mt-6 flex justify-end space-x-4">
+          <button id="cancel-task" class="px-4 py-2 bg-gray-300 text-gray-700 rounded">キャンセル</button>
+          <button id="add-task" class="px-4 py-2 bg-blue-500 text-white rounded">追加</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // JavaScript to handle tab switching
+      const tabs = document.querySelectorAll("[id$='-btn']");
+      const tabContents = document.querySelectorAll(".tab-content");
+
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          const target = tab.id.replace("-btn", "");
+
+          tabContents.forEach((content) => {
+            content.classList.remove("active");
+          });
+
+          document.getElementById(target).classList.add("active");
+        });
+      });
+
+      // 新規タスク追加ダイアログの制御
+      const newTaskBtn = document.getElementById('new-task-btn');
+      const newTaskDialog = document.getElementById('new-task-dialog');
+      const cancelTaskBtn = document.getElementById('cancel-task');
+      const addTaskBtn = document.getElementById('add-task');
+
+      newTaskBtn.addEventListener('click', () => {
+        newTaskDialog.style.display = 'block';
+      });
+
+      cancelTaskBtn.addEventListener('click', () => {
+        newTaskDialog.style.display = 'none';
+      });
+
+      addTaskBtn.addEventListener('click', () => {
+        // ここでタスク追加のロジックを実装
+        // 例: フォームの値を取得し、タスク一覧に追加する
+        const title = document.getElementById('task-title').value;
+        const priority = document.getElementById('task-priority').value;
+        const dueDate = document.getElementById('task-due-date').value;
+        const estimatedTime = document.getElementById('task-estimated-time').value;
+        const assignee = document.getElementById('task-assignee').value;
+
+        // タスクをテーブルに追加する処理（実際のアプリケーションではサーバーサイドの処理が必要）
+        const taskTable = document.querySelector('#tab-tasks table tbody');
+        const newRow = taskTable.insertRow();
+        newRow.innerHTML = `
+          <td class="p-4">${title}</td>
+          <td class="p-4">${priority}</td>
+          <td class="p-4">未着手</td>
+          <td class="p-4">${dueDate}</td>
+          <td class="p-4">${estimatedTime}分</td>
+          <td class="p-4">${assignee}</td>
+        `;
+
+        // ダイアログを閉じる
+        newTaskDialog.style.display = 'none';
+      });
+
+      // ダイアログの外側をクリックしたら閉じる
+      window.onclick = function(event) {
+        if (event.target == newTaskDialog) {
+          newTaskDialog.style.display = "none";
+        }
+      }
+
+      // カレンダー表示の生成
+      function generateCalendarHours() {
+        const calendarHours = document.getElementById('calendar-hours');
+        let hoursHtml = '';
+        for (let hour = 9; hour < 18; hour++) {
+          hoursHtml += `
+            <div class="flex items-center">
+              <div class="w-16 text-right pr-4">${hour.toString().padStart(2, '0')}:00</div>
+              <div class="flex-1 h-12 border border-gray-200 rounded-md"></div>
+            </div>
+          `;
+        }
+        calendarHours.innerHTML = hoursHtml;
+      }
+
+      // ページ読み込み時にカレンダー表示を生成
+      window.addEventListener('load', generateCalendarHours);
+    </script>
+  </body>
+</html>

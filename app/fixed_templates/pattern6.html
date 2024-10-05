@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>顧客サービス向上スケジュール管理</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100">
+    <div class="flex h-screen">
+      <!-- Sidebar -->
+      <aside class="w-64 bg-white p-4 shadow">
+        <nav class="space-y-2">
+          <button
+            class="w-full flex items-center justify-start py-2 text-left hover:bg-gray-200"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="mr-2 h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path d="M5 13l4 4L19 7" />
+            </svg>
+            タスク一覧
+          </button>
+          <button
+            class="w-full flex items-center justify-start py-2 text-left hover:bg-gray-200"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="mr-2 h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path d="M5 13l4 4L19 7" />
+            </svg>
+            カレンダー表示
+          </button>
+          <button
+            class="w-full flex items-center justify-start py-2 text-left hover:bg-gray-200"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="mr-2 h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path d="M5 13l4 4L19 7" />
+            </svg>
+            上司と共有
+          </button>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <main class="flex-1 p-6 overflow-auto">
+        <div class="flex justify-between items-center mb-6">
+          <h1 class="text-2xl font-bold">顧客サービス向上スケジュール管理</h1>
+          <button
+            id="addTaskButton"
+            class="flex items-center px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="mr-2 h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path d="M12 4v16m8-8H4" />
+            </svg>
+            新規タスク追加
+          </button>
+        </div>
+
+        <!-- タブナビゲーション -->
+        <div>
+          <div class="flex space-x-4 border-b">
+            <button
+              id="tabTasks"
+              class="pb-2 border-b-2 border-blue-500 text-blue-500"
+            >
+              タスク
+            </button>
+            <button id="tabCalendar" class="pb-2">カレンダー</button>
+            <button id="tabAnalysis" class="pb-2">時間分析</button>
+          </div>
+
+          <!-- タスク一覧 -->
+          <div id="contentTasks">
+            <h2 class="text-xl font-bold mb-4">タスク一覧</h2>
+            <table class="min-w-full bg-white">
+              <thead>
+                <tr>
+                  <th class="px-4 py-2">タスク名</th>
+                  <th class="px-4 py-2">優先度</th>
+                  <th class="px-4 py-2">状態</th>
+                  <th class="px-4 py-2">期限</th>
+                  <th class="px-4 py-2">見積時間</th>
+                  <th class="px-4 py-2">実績時間</th>
+                  <th class="px-4 py-2">進捗</th>
+                </tr>
+              </thead>
+              <tbody id="taskList"></tbody>
+            </table>
+
+            <!-- 日次タスク振り返り -->
+            <div class="mt-6">
+              <h2 class="text-xl font-bold mb-4">日次タスク振り返り</h2>
+              <label
+                for="dailyReflection"
+                class="block text-sm font-medium text-gray-700"
+                >本日の達成度と明日への改善点</label
+              >
+              <textarea
+                id="dailyReflection"
+                rows="4"
+                class="mt-1 block w-full p-2 border rounded-md"
+              ></textarea>
+              <button
+                id="saveReflectionButton"
+                class="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
+              >
+                保存
+              </button>
+            </div>
+          </div>
+
+          <!-- カレンダー表示 -->
+          <div id="contentCalendar" class="hidden">
+            <h2 class="text-xl font-bold mb-4">カレンダー表示</h2>
+            <div class="flex justify-between items-center mb-6">
+              <button id="prevDay" class="px-4 py-2 bg-gray-300 rounded">
+                前日
+              </button>
+              <span id="currentDate" class="text-lg font-semibold"></span>
+              <button id="nextDay" class="px-4 py-2 bg-gray-300 rounded">
+                翌日
+              </button>
+            </div>
+            <div class="space-y-2" id="timeSlots">
+              <!-- 時間スロットはJavaScriptで動的に生成されます -->
+            </div>
+          </div>
+
+          <!-- 時間分析 -->
+          <div id="contentAnalysis" class="hidden">
+            <h2 class="text-xl font-bold mb-4">時間分析</h2>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="p-4 bg-white shadow rounded">
+                <h3 class="text-lg font-semibold">タスク完了率</h3>
+                <div class="w-full h-64 bg-gray-200 rounded"></div>
+              </div>
+              <div class="p-4 bg-white shadow rounded">
+                <h3 class="text-lg font-semibold">時間配分分析</h3>
+                <div class="w-full h-64 bg-gray-200 rounded"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- モーダルウィンドウ -->
+      <div
+        id="taskModal"
+        class="fixed inset-0 bg-gray-800 bg-opacity-75 hidden"
+      >
+        <div
+          class="relative w-full max-w-md mx-auto mt-24 bg-white rounded-lg shadow-lg p-6"
+        >
+          <h3 class="text-lg font-semibold">新規タスク追加</h3>
+          <div class="mt-4 space-y-4">
+            <div class="grid grid-cols-4 items-center gap-4">
+              <label for="taskTitle" class="text-right">タスク名</label>
+              <input
+                id="taskTitle"
+                type="text"
+                class="w-full px-3 py-2 border rounded-md col-span-3"
+              />
+            </div>
+            <div class="grid grid-cols-4 items-center gap-4">
+              <label for="taskPriority" class="text-right">優先度</label>
+              <select
+                id="taskPriority"
+                class="w-full px-3 py-2 border rounded-md col-span-3"
+              >
+                <option value="高">高</option>
+                <option value="中">中</option>
+                <option value="低">低</option>
+              </select>
+            </div>
+            <div class="grid grid-cols-4 items-center gap-4">
+              <label for="taskDueDate" class="text-right">期限</label>
+              <input
+                id="taskDueDate"
+                type="date"
+                class="w-full px-3 py-2 border rounded-md col-span-3"
+              />
+            </div>
+            <div class="grid grid-cols-4 items-center gap-4">
+              <label for="taskEstimatedTime" class="text-right"
+                >見積時間（分）</label
+              >
+              <input
+                id="taskEstimatedTime"
+                type="number"
+                class="w-full px-3 py-2 border rounded-md col-span-3"
+              />
+            </div>
+            <div class="flex justify-end space-x-2">
+              <button
+                id="closeModal"
+                class="px-4 py-2 bg-gray-500 text-white rounded"
+              >
+                キャンセル
+              </button>
+              <button
+                id="saveTaskButton"
+                class="px-4 py-2 bg-blue-500 text-white rounded"
+              >
+                追加
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const tasks = [
+        {
+          id: 1,
+          title: "顧客A対応",
+          priority: "高",
+          status: "進行中",
+          dueDate: "2024-03-15",
+          estimatedTime: 120,
+          actualTime: 90,
+          progress: 75,
+        },
+        {
+          id: 2,
+          title: "週次レポート作成",
+          priority: "中",
+          status: "未着手",
+          dueDate: "2024-03-18",
+          estimatedTime: 60,
+          actualTime: 0,
+          progress: 0,
+        },
+      ];
+
+      const taskList = document.getElementById("taskList");
+      const tabTasks = document.getElementById("tabTasks");
+      const tabCalendar = document.getElementById("tabCalendar");
+      const tabAnalysis = document.getElementById("tabAnalysis");
+      const contentTasks = document.getElementById("contentTasks");
+      const contentCalendar = document.getElementById("contentCalendar");
+      const contentAnalysis = document.getElementById("contentAnalysis");
+      const taskModal = document.getElementById("taskModal");
+      const addTaskButton = document.getElementById("addTaskButton");
+      const closeModal = document.getElementById("closeModal");
+      const saveTaskButton = document.getElementById("saveTaskButton");
+      const taskTitle = document.getElementById("taskTitle");
+      const taskPriority = document.getElementById("taskPriority");
+      const taskDueDate = document.getElementById("taskDueDate");
+      const taskEstimatedTime = document.getElementById("taskEstimatedTime");
+      const currentDateElem = document.getElementById("currentDate");
+      let selectedDate = new Date();
+
+      function renderTasks() {
+        taskList.innerHTML = tasks
+          .map(
+            (task) => `
+        <tr>
+          <td class="border px-4 py-2">${task.title}</td>
+          <td class="border px-4 py-2">${task.priority}</td>
+          <td class="border px-4 py-2">${task.status}</td>
+          <td class="border px-4 py-2">${new Date(
+            task.dueDate
+          ).toLocaleDateString("ja-JP")}</td>
+          <td class="border px-4 py-2">${task.estimatedTime}分</td>
+          <td class="border px-4 py-2">${task.actualTime}分</td>
+          <td class="border px-4 py-2">${task.progress}%</td>
+        </tr>
+      `
+          )
+          .join("");
+      }
+
+      tabTasks.addEventListener("click", () => {
+        contentTasks.classList.remove("hidden");
+        contentCalendar.classList.add("hidden");
+        contentAnalysis.classList.add("hidden");
+        tabTasks.classList.add("border-blue-500", "text-blue-500");
+        tabCalendar.classList.remove("border-blue-500", "text-blue-500");
+        tabAnalysis.classList.remove("border-blue-500", "text-blue-500");
+      });
+
+      tabCalendar.addEventListener("click", () => {
+        contentTasks.classList.add("hidden");
+        contentCalendar.classList.remove("hidden");
+        contentAnalysis.classList.add("hidden");
+        tabCalendar.classList.add("border-blue-500", "text-blue-500");
+        tabTasks.classList.remove("border-blue-500", "text-blue-500");
+        tabAnalysis.classList.remove("border-blue-500", "text-blue-500");
+        currentDateElem.textContent = selectedDate.toLocaleDateString("ja-JP", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+        renderTimeSlots();
+      });
+
+      tabAnalysis.addEventListener("click", () => {
+        contentTasks.classList.add("hidden");
+        contentCalendar.classList.add("hidden");
+        contentAnalysis.classList.remove("hidden");
+        tabAnalysis.classList.add("border-blue-500", "text-blue-500");
+        tabTasks.classList.remove("border-blue-500", "text-blue-500");
+        tabCalendar.classList.remove("border-blue-500", "text-blue-500");
+      });
+
+      addTaskButton.addEventListener("click", () => {
+        taskModal.classList.remove("hidden");
+      });
+
+      closeModal.addEventListener("click", () => {
+        taskModal.classList.add("hidden");
+      });
+
+      saveTaskButton.addEventListener("click", () => {
+        const newTask = {
+          id: tasks.length + 1,
+          title: taskTitle.value,
+          priority: taskPriority.value,
+          dueDate: taskDueDate.value,
+          estimatedTime: parseInt(taskEstimatedTime.value),
+          actualTime: 0,
+          status: "未着手",
+          progress: 0,
+        };
+        tasks.push(newTask);
+        taskTitle.value = "";
+        taskPriority.value = "中";
+        taskDueDate.value = "";
+        taskEstimatedTime.value = "";
+        taskModal.classList.add("hidden");
+        renderTasks();
+      });
+
+      document.getElementById("prevDay").addEventListener("click", () => {
+        selectedDate.setDate(selectedDate.getDate() - 1);
+        currentDateElem.textContent = selectedDate.toLocaleDateString("ja-JP", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+      });
+
+      document.getElementById("nextDay").addEventListener("click", () => {
+        selectedDate.setDate(selectedDate.getDate() + 1);
+        currentDateElem.textContent = selectedDate.toLocaleDateString("ja-JP", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+      });
+
+      function renderTimeSlots() {
+        const timeSlotsContainer = document.getElementById("timeSlots");
+        timeSlotsContainer.innerHTML = "";
+        for (let hour = 9; hour <= 17; hour++) {
+          const timeSlot = document.createElement("div");
+          timeSlot.className = "flex items-center";
+          timeSlot.innerHTML = `
+            <div class="w-16 text-right pr-4">${hour}:00</div>
+            <div class="flex-1 h-12 border border-gray-200 rounded-md"></div>
+          `;
+          timeSlotsContainer.appendChild(timeSlot);
+        }
+      }
+
+      renderTasks();
+      renderTimeSlots();
+    </script>
+  </body>
+</html>
