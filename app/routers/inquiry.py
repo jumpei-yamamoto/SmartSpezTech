@@ -119,17 +119,17 @@ class EstimateData(BaseModel):
 
 class ScreenEstimate(BaseModel):
     workload: str
-    difficulty: int
+    hourly_rate: str
     tests: List[str]
 
 class EventEstimate(BaseModel):
     workload: str
-    difficulty: int
+    hourly_rate: str
     tests: List[str]
 
 class DatabaseEstimate(BaseModel):
     workload: str
-    difficulty: int
+    hourly_rate: str
     tests: List[str]
 
 class AIEstimate(BaseModel):

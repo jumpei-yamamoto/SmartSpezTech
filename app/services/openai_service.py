@@ -15,7 +15,7 @@ aclient = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 async def generate_ai_estimate(data: Dict[Any, Any]) -> Dict[str, Any]:
     # プロンプトの修正
     prompt = f"""
-    Given the following project details, provide an estimate for the workload and difficulty of each component:
+    Given the following project details, provide an estimate for the workload and hourly rate of each component:
 
     Screens:
     {data['screens']}
@@ -34,12 +34,12 @@ async def generate_ai_estimate(data: Dict[Any, Any]) -> Dict[str, Any]:
         "screens": {{
             "画面名1": {{
                 "workload": "X 日",
-                "difficulty": Y,
+                "hourly_rate": "時給:Y円",
                 "tests": ["test1", "test2", ...]
             }},
             "画面名2": {{
                 "workload": "X 日",
-                "difficulty": Y,
+                "hourly_rate": "時給:Y円",
                 "tests": ["test1", "test2", ...]
             }},
             ...
@@ -47,25 +47,25 @@ async def generate_ai_estimate(data: Dict[Any, Any]) -> Dict[str, Any]:
         "events": {{
             "イベント名1": {{
                 "workload": "X 日",
-                "difficulty": Y,
+                "hourly_rate": "時給:Y円",
                 "tests": ["test1", "test2", ...]
             }},
             "イベント名2": {{
                 "workload": "X 日",
-                "difficulty": Y,
+                "hourly_rate": "時給:Y円",
                 "tests": ["test1", "test2", ...]
             }},
             ...
         }},
         "database": {{
             "workload": "X 日",
-            "difficulty": Y,
+            "hourly_rate": "時給:Y円",
             "tests": ["test1", "test2", ...]
         }}
     }}
 
     workloadは日数で返す 開発者歴が3年程度を想定してください
-    difficultyは1~10で返す 1が最も簡単で10が最も難しい
+    hourly_rateは難易度に応じて1000円から10000円の範囲で設定してください。難しいタスクほど高い時給になります。
     testsはテストケースをシンプルに分かりやすく返す 例: ["ログイン成功", "ログイン失敗"]
     画面名やイベント名は、提供された情報から適切な名前を付けてください。
     """
